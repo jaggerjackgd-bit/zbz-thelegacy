@@ -1,0 +1,605 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zombiz The Legacy</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f1ea;--fg:#1d1d1b;--card:#fff;--bd:#cfc9bb;--ac:#b3261e}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16181a;--fg:#ececec;--card:#23272a;--bd:#3a4045;--ac:#ff6b5e}}
+:root[data-theme="dark"]{--bg:#16181a;--fg:#ececec;--card:#23272a;--bd:#3a4045;--ac:#ff6b5e}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
+#wrap{max-width:820px;margin:0 auto;padding:8px}
+#stage{position:relative}
+canvas{width:100%;height:auto;display:block;border-radius:8px;cursor:crosshair;touch-action:none}
+#ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.72);border-radius:8px;overflow:auto}
+.pn{background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;max-width:94%;text-align:center}
+.pn h1{margin:0 0 4px;font-size:24px}.pn p{margin:6px 0}
+.m{color:var(--ac);font-weight:600}.h{font-size:12px;opacity:.75}
+.cs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.ch{background:var(--bg);color:var(--fg);border:2px solid var(--bd);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:2px;cursor:pointer;font:inherit}
+.ch small{font-size:11px;opacity:.8}.ch.on{border-color:var(--ac)}.ch:disabled{opacity:.5;cursor:not-allowed}
+#go{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:10px 28px;font:600 16px inherit;cursor:pointer}
+#pb{position:absolute;top:8px;left:8px;z-index:2;display:none;background:rgba(0,0,0,.55);color:#fff;border:0;border-radius:6px;padding:4px 10px;font-size:16px;cursor:pointer}
+.b{display:block;width:100%;margin:8px 0;background:var(--bg);color:var(--fg);border:2px solid var(--bd);border-radius:8px;padding:10px 28px;font:inherit;cursor:pointer}
+body.fit,body.fs{overflow:hidden}
+body.fs{background:#000}
+body.fit #wrap,body.fs #wrap{max-width:none;padding:0}
+body.fit #stage,body.fs #stage{width:min(100vw,160vh);margin:0 auto}
+body.fit canvas,body.fs canvas{border-radius:0}
+#ov.home{background:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.7))}
+.hm{color:#fff;text-align:center;width:min(92%,520px);margin:auto;padding:10px 0}
+.logo{font:900 54px/1 system-ui,sans-serif;letter-spacing:.12em;color:#ff4d3d;text-shadow:0 3px 0 #5a0d08,0 0 24px rgba(255,60,40,.55)}
+.sub{letter-spacing:.5em;font-size:12px;opacity:.85;margin:6px 0 12px}
+.note{margin:6px 0 10px;padding:6px 10px;background:rgba(0,0,0,.55);border:1px solid #ff6b5e;border-radius:8px;color:#ffb3a8;font-weight:600;font-size:13px}
+.acct{background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:8px 10px;margin:8px 0 12px}
+.lv{font-weight:700;text-align:left}.xp{float:right;font-weight:500;font-size:12px;opacity:.8}
+.xb{height:8px;background:rgba(255,255,255,.18);border-radius:4px;overflow:hidden;margin:4px 0 8px}
+.xb i{display:block;height:100%;background:#3b82f6}
+.st{display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;font-size:12px;opacity:.92}
+.big{display:block;width:100%;background:var(--ac);color:#fff;border:0;border-radius:10px;padding:12px;font:800 22px system-ui,sans-serif;letter-spacing:.08em;cursor:pointer;margin-bottom:10px}
+.big small{display:block;font:500 12px system-ui,sans-serif;letter-spacing:0;opacity:.9}
+.mp{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:rgba(255,255,255,.1);color:#fff;border:2px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 10px;margin-bottom:8px;font:inherit;cursor:pointer;box-sizing:border-box}
+.mp:hover{border-color:#ff6b5e}
+.mp.off{opacity:.5;cursor:default}.mp.off:hover{border-color:rgba(255,255,255,.25)}
+.mpv{flex:0 0 96px;height:60px;border-radius:6px;background:linear-gradient(90deg,#41602a 38%,#4c4f54 38% 62%,#41602a 62%)}
+.mpv.off{background:#3a3d40}
+.mpt{font-size:13px;line-height:1.35}.mpt p{margin:2px 0 4px}.mpt small{opacity:.8}
+.row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.row .b2{grid-column:span 2}.row .b2:nth-child(n+4){grid-column:span 3}
+.b2:disabled{opacity:.4;cursor:default}
+.bdg{display:inline-block;min-width:18px;background:#ff4d3d;border-radius:9px;font-size:11px;font-weight:700;padding:0 5px;margin-left:4px}
+.pts{font-size:13px;margin:-4px 0 8px;opacity:.9}
+.tl{text-align:left;font-weight:700;font-size:13px;margin:8px 0 6px}
+.lock{padding:14px;border:1px dashed rgba(255,255,255,.3);border-radius:10px;opacity:.7;font-size:13px}
+.sk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sc{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 6px;font-size:12px;display:flex;flex-direction:column;gap:4px;align-items:center}
+.sc.on{border-color:#ff6b5e;background:rgba(255,107,94,.18)}.sc.off{opacity:.4}
+.si{font-size:22px;line-height:1}.pips{letter-spacing:2px;color:#ffb347;font-size:12px}.sd{opacity:.9;line-height:1.35}
+.sb{margin-top:auto;width:100%;background:var(--ac);color:#fff;border:0;border-radius:6px;padding:6px;font:inherit;font-weight:600;cursor:pointer}
+.sb:disabled{opacity:.45;cursor:default}
+.row2{display:flex;gap:8px;margin-top:8px}
+.md{font-size:11px;opacity:.75;line-height:1.3}
+.xpc{cursor:pointer}
+.xpn{font-size:11px;opacity:.9;margin-bottom:2px}.xpn b{color:#ffb347}
+.sc.pv{opacity:.65}
+.be{display:flex;gap:12px;align-items:center;text-align:left;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:8px 10px;margin-bottom:8px}
+.bi{flex:0 0 80px;display:flex;align-items:center;justify-content:center}
+.zd{display:block;border-radius:50%;box-shadow:0 0 0 2px rgba(0,0,0,.45)}
+.bt{flex:1;min-width:0;font-size:13px;line-height:1.35}
+.bh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.bn{font-size:16px}
+.bd{margin:4px 0 6px;font-size:12px;opacity:.82;font-style:italic}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.stats.s3{grid-template-columns:repeat(3,1fr)}
+.stat{background:rgba(0,0,0,.35);border-radius:6px;padding:5px 7px;text-align:left}
+.sl{display:block;font-size:10px;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+.sv{display:block;font-size:15px;line-height:1.25;font-weight:700;white-space:nowrap}
+.sbar{display:block;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:3px;overflow:hidden}
+.sbar u{display:block;height:100%;text-decoration:none}
+.cv{display:flex;align-items:center;gap:16px}
+.cn{display:flex;flex-direction:column;line-height:1.25}.cn b{font-size:15px}.cn small{opacity:.8}
+.av{position:relative;flex:0 0 30px;width:30px;height:30px;border-radius:50%;box-shadow:0 0 0 2px rgba(0,0,0,.45)}
+.av::after{content:"";position:absolute;left:22px;top:12px;width:16px;height:6px;border-radius:3px;background:#ddd}
+.cu{margin-top:2px;font-size:12px;line-height:1.3;color:#ffcc80;background:rgba(0,0,0,.3);border-radius:6px;padding:5px 7px}
+.cu.done{color:#a5d6a7}
+.tabs{display:flex;gap:6px;margin-bottom:8px}
+.tab{flex:1;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:8px 10px;font:inherit;font-weight:600;cursor:pointer}
+.tab small{opacity:.75;font-weight:400;margin-left:6px}
+.tab.on{background:rgba(255,107,94,.25);border-color:#ff6b5e}
+.cg{grid-column:1/-1;text-align:left;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.75;margin-top:4px}
+.tag{font-size:11px;background:rgba(255,107,94,.25);border-radius:6px;padding:1px 6px;margin-left:4px}
+.bs{margin-top:6px;font-size:12px;color:#ffcc80}
+.hn{font-size:12px;opacity:.75;margin:4px 0 0}
+.b2{flex:1;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:9px 12px;font:inherit;cursor:pointer}
+.b2.w{display:block;width:100%;margin:8px 0}
+.ttl{font:800 22px system-ui,sans-serif;margin-bottom:10px}
+.hm .ch{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25);padding:10px;gap:8px;text-align:left}
+.hm .ch.lk{opacity:.75}
+.hm .ch.on{border-color:#ff6b5e;background:rgba(255,107,94,.18)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.how{text-align:left;font-size:13px;line-height:1.6;padding-left:18px;margin:0 0 12px}
+
+.wk{text-align:left;padding:14px 18px}.wk b{display:block;font-size:1.1em}.wk small{display:block;opacity:.7;margin-top:3px}
+.wd{display:block;width:46px;height:12px;border-radius:3px}
+
+#pnb{position:absolute;right:10px;bottom:10px;z-index:3;display:none;background:rgba(0,0,0,.6);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 12px;font:12px system-ui,sans-serif;cursor:pointer}#pnb:hover,.ib:hover{background:rgba(255,255,255,.18)}
+.ib{position:absolute;bottom:10px;z-index:3;display:none;width:34px;height:34px;padding:0;background:rgba(0,0,0,.6);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:50%;font-size:16px;line-height:1;cursor:pointer}
+.be.lk{opacity:.6}
+.sv{width:100%;box-sizing:border-box;margin:6px 0;background:rgba(0,0,0,.45);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:8px;font:11px ui-monospace,monospace;resize:vertical}
+#invp{position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:5;display:none;background:rgba(150,24,24,.92);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:10px;padding:6px 14px;font:600 13px system-ui,sans-serif;cursor:pointer;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.5)}
+.bk{flex:none;width:auto;padding:7px 14px}.bkt{position:absolute;left:10px;top:10px;z-index:2;background:rgba(0,0,0,.55)}.bkb{text-align:left;margin-top:10px}
+.bp{position:absolute;left:10px;top:12px;width:128px;text-align:left;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:8px 10px;font-size:12px}.bpt{font-weight:700;margin-bottom:6px;display:flex;justify-content:space-between;gap:4px}.bpt small{opacity:.6;font-weight:400}.bpr{display:flex;flex-direction:column;gap:1px;padding:5px 7px;border-radius:6px;background:rgba(255,255,255,.07);opacity:.75}.bpr.ok{background:rgba(102,187,106,.2);opacity:1}.bp.bw{left:auto;right:10px}
+.bpr small{opacity:.65}.bpr i{font-style:normal;font-size:11px;margin-top:2px}
+.pt{text-align:left;margin:0 0 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:10px 14px}.pt h3{margin:0 0 6px;font-size:15px;display:flex;justify-content:space-between;gap:8px}.pt h3 small{opacity:.6;font-weight:400}.pt ul{margin:0;padding-left:18px;font-size:13px;line-height:1.55}
+</style></head><body>
+<div id="wrap"><div id="stage"><canvas id="c" width="800" height="500"></canvas><button id="pb" title="Pause">⏸</button><div id="ov"></div><div id="invp"></div><button id="pnb">📜 Patch notes</button><button id="hwb" class="ib" title="Comment jouer" style="left:10px">❓</button><button id="opb" class="ib" title="Options" style="left:54px">⚙️</button></div></div>
+<script>
+const WW=2160,WH=1350,W=800,H=500,cv=document.getElementById('c'),x=cv.getContext('2d'),ov=document.getElementById('ov');
+const WP={
+pistol:{n:'GLOCK 18',d:18,r:.35,m:20,rl:.9,s:.03,p:1,rg:210,rt:'Moyenne',sk:3,skt:'Léger',c:'#bbb'},
+deagle:{n:'DESERT EAGLE',d:30,r:1/1.9,m:7,rl:1,s:.05,p:1,pr:2,rg:225,rt:'Moyenne',sk:5,skt:'Fort',c:'#e8c27a'},
+uzi:{n:'UZI',d:6,r:1/13,m:25,rl:.7,s:.16,p:1,rg:190,rt:'Moyenne',sk:3,skt:'Léger',c:'#ff6b9d'},
+smg:{n:'AK47',d:10,r:.09,m:30,rl:1.4,s:.10,p:1,rg:260,rt:'Moyenne',sk:4,skt:'Moyen',c:'#4aa3ff'},
+shotgun:{n:'SAWED-OFF',d:15,r:.8,m:6,rl:1.8,s:.3,p:6,pr:2,rg:110,rt:'Courte',sk:5,skt:'Fort',c:'#ff9f43'},
+rifle:{n:'SSG-08',d:42,r:.45,m:8,rl:1.6,s:.01,p:1,pr:3,rg:450,rt:'Longue',sk:5,skt:'Fort',c:'#7bd88f'}};
+const FAST=160,BV=6000,VIS=220;
+const WD={n:['deagle',.08],f:['uzi',.10],t:['shotgun',.10],c:['rifle',.10],x:['smg',.05]};
+const CH=[
+{n:'Recrue',hp:100,sp:140,dg:18,col:'#4aa3ff',u:'Disponible dès le départ',ok:s=>true},
+{n:'Fantassin',hp:170,sp:125,dg:18,col:'#7bd88f',u:'Atteindre la vague 5 (Route déserte)',pg:s=>'meilleure vague '+(s.bm[0]||0)+'/5',ok:s=>(s.bm[0]||0)>=5},
+{n:'Éclaireur',hp:80,sp:195,dg:16,col:'#ffd23f',u:'Atteindre la vague 10 (Route déserte)',pg:s=>'meilleure vague '+(s.bm[0]||0)+'/10',ok:s=>(s.bm[0]||0)>=10},
+{n:'Caporal',hp:110,sp:FAST,dg:25,col:'#c792ea',u:'Vaincre le boss',ok:s=>s.boss},
+{n:'Ranger bleu',hp:150,sp:165,dg:30,col:'#1f4de0',u:'Tuer 5 000 zombies (cumulé sur le compte)',pg:s=>fmtN(s.kills)+'/5 000',ok:s=>s.kills>=5000},
+{n:'Ranger vert',hp:250,sp:175,dg:34,col:'#22b14c',u:'Tuer 10 000 zombies (cumulé sur le compte)',pg:s=>fmtN(s.kills)+'/10 000',ok:s=>s.kills>=10000},
+{n:'Ranger violet',hp:350,sp:185,dg:38,col:'#8e3fd0',u:'Tuer 100 000 zombies (cumulé sur le compte)',pg:s=>fmtN(s.kills)+'/100 000',ok:s=>s.kills>=100000},
+{n:'Ranger rouge',hp:450,sp:195,dg:42,col:'#e02b2b',u:'Tuer 500 000 zombies (cumulé sur le compte)',pg:s=>fmtN(s.kills)+'/500 000',ok:s=>s.kills>=500000},
+{n:'Ranger jaune',hp:550,sp:205,dg:46,col:'#ffe600',u:'Tuer 1 000 000 zombies (cumulé sur le compte)',pg:s=>fmtN(s.kills)+'/1 000 000',ok:s=>s.kills>=1000000},
+{n:'Soldat',hp:120,sp:160,dg:24,col:'#556b2f',u:'Atteindre le niveau de compte 10',pg:s=>'niveau '+s.lvl+'/10',ok:s=>s.lvl>=10},
+{n:'Mercenaire',hp:220,sp:170,dg:29,col:'#8d6e63',u:'Atteindre le niveau de compte 20',pg:s=>'niveau '+s.lvl+'/20',ok:s=>s.lvl>=20},
+{n:'Samouraï',hp:320,sp:180,dg:34,col:'#eceff1',u:'Atteindre le niveau de compte 30',pg:s=>'niveau '+s.lvl+'/30',ok:s=>s.lvl>=30},
+{n:'Berserker',hp:420,sp:190,dg:39,col:'#7b1e1e',u:'Atteindre le niveau de compte 40',pg:s=>'niveau '+s.lvl+'/40',ok:s=>s.lvl>=40},
+{n:'Rambo',hp:520,sp:200,dg:44,col:'#ff7a00',u:'Atteindre le niveau de compte 50',pg:s=>'niveau '+s.lvl+'/50',ok:s=>s.lvl>=50}];
+const ZT={n:{hp:30,sp:55,r:12,dmg:8,xp:2,c:'#6b8f47'},f:{hp:18,sp:105,r:10,dmg:6,xp:3,c:'#b5c24a'},t:{hp:110,sp:38,r:17,dmg:16,xp:5,c:'#4f6a6a'},c:{hp:45,sp:110,r:12,dmg:10,xp:4,c:'#8e44ad'},x:{hp:70,sp:140,r:15,dmg:28,xp:5,c:'#e67e22'},k:{hp:20,sp:165,r:9,dmg:5,xp:1,c:'#e0409a'},B:{hp:1800,sp:52,r:34,dmg:30,xp:100,c:'#8a1c2b'}};
+const TR=[];for(let i=0;i<40;i++)TR.push({x:i*937%WW,y:i*613%WH,r:30+i%4*10});
+const MAXLV=50,XPL=67.5,XPG=1.1,xpNeed=L=>Math.round(XPL*L*Math.pow(XPG,L-1));
+let S={best:0,kills:0,boss:false,lvl:1,xp:0},sel=0,G=null,note='';
+try{Object.assign(S,JSON.parse(localStorage.getItem('zombiz')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('zombiz',JSON.stringify(S))}catch(e){}};
+if(!Array.isArray(S.sk))S.sk=[];
+if(!Array.isArray(S.bm))S.bm=[S.best||0];
+if(!S.seen||typeof S.seen!='object')S.seen={};S.seen.pistol=1;
+const WZ=['n','f','t','c','x','k','B'],WA=['pistol','deagle','uzi','smg','shotgun','rifle','med','nrg'];
+const WN={n:'Le marcheur',f:'L’affamé',t:'Le costaud',c:'Le rôdeur',x:'La brute',k:'Le rejeton',B:'Le boss',med:'Kit de soin',nrg:'Boisson énergisante'};
+const wnm=k=>WN[k]||(WP[k]&&WP[k].n)||k;
+const nSeen=a=>a.filter(k=>S.seen[k]).length;
+const lockCard=(t,m)=>`<div class="be lk"><div class="bi"><b style="font-size:30px;opacity:.5">?</b></div><div class="bt"><div class="bh"><b class="bn">???</b><span class="tag">🔒 ${t}</span></div><p class="bd">${m}</p></div></div>`;
+if(S.xv!==2){let t=15*S.lvl*(S.lvl-1)+S.xp,l=1;while(t>=45*l){t-=45*l;l++}S.lvl=l;S.xp=t;S.xv=2;save()}
+if(S.lvl>MAXLV){S.lvl=MAXLV;S.xp=0}
+if(S.sk.reduce((a,t)=>a+(t?t.r:0),0)>S.lvl)S.sk=[];
+const K={},M={x:W/2,y:H/2,down:false};
+
+const TIERS=[[
+{id:'dmg',n:'Dégâts',i:'💥',v:[1,2,3,4,5],u:'',f:v=>'+'+v+' dégâts par balle'},
+{id:'hp',n:'Santé',i:'❤️',v:[5,10,15,20,25],u:'',f:v=>'+'+v+' PV max'},
+{id:'fr',n:'Cadence de tir',i:'⚡',v:[1,2,3,4,5],u:'%',f:v=>'+'+v+' % de cadence'}],[
+{id:'heal',n:'Soins',i:'💚',v:[2,4,6,8,10],u:'%',f:v=>'+'+v+' % des PV max par soin'},
+{id:'nrg',n:'Énergisantes',i:'🥤',v:[1,2,3,4,5],u:'%',f:v=>'+'+v+' % d’effet des boissons'},
+{id:'mag',n:'Balle supplémentaire',i:'🔫',v:[1,2,3,4,5],u:'',f:v=>'+'+v+' balle'+(v>1?'s':'')+' par chargeur'}],[
+{id:'spd',n:'Vitesse',i:'👟',v:[2,4,6,8,10],u:'',f:v=>'+'+v+' vitesse de déplacement'},
+{id:'rl',n:'Rechargement',i:'🔄',v:[3,6,9,12,15],u:'%',f:v=>'+'+v+' % de vitesse de rechargement'},
+{id:'hp2',k:'hp',n:'Vitalité',i:'🛡️',v:[10,20,30,40,50],u:'',f:v=>'+'+v+' PV max'}]];
+const TUR=[{d:12,r:140},{d:18,r:170},{d:24,r:200},{d:30,r:230},{d:36,r:260}];
+TIERS.push(TIERS[0],TIERS[1],[
+{id:'sh',n:'Bouclier',i:'🔰',v:[1,2,3,4,5],u:'',m:'Une seconde barre de vie, sous la première. Elle se régénère à la fin de chaque vague.',f:v=>'Bouclier '+20*v+' % des PV max, régén. '+10*v+' % par vague'},
+{id:'tu',n:'Tourelle',i:'🤖',v:[1,2,3,4,5],u:'',m:'Touche T : pose une tourelle automatique fixe, repositionnable toutes les 10 s.',f:v=>'Dégâts '+TUR[v-1].d+' · portée '+TUR[v-1].r}]);
+TIERS.push(TIERS[2],TIERS[0],TIERS[1],TIERS[5]);
+const EXCL={5:9,9:5};
+const banned=(i,id)=>EXCL[i]!=null&&!!S.sk[EXCL[i]]&&S.sk[EXCL[i]].b==id;
+S.sk.forEach((t,i)=>{if(t&&(!TIERS[i]||!TIERS[i].some(b=>b.id==t.b)))S.sk[i]=null});
+const spent=()=>S.sk.reduce((a,t)=>a+(t?t.r:0),0);
+const pts=()=>S.lvl-spent();
+function skillBonus(sk=S.sk){const b={dmg:0,hp:0,fr:0,heal:0,nrg:0,mag:0,spd:0,rl:0,sh:0,tu:0};sk.forEach((t,i)=>{if(t&&TIERS[i]){const br=TIERS[i].find(x=>x.id==t.b);if(br)b[br.k||br.id]+=br.v[t.r-1]}});return b}
+function upSkill(i,id){
+if(pts()<1||i>=TIERS.length||S.lvl<5*i+1||banned(i,id))return;
+const c=S.sk[i];
+if(!c)S.sk[i]={b:id,r:1};else if(c.b==id&&c.r<5)c.r++;else return;
+save();
+}
+function skillsMenu(){
+const p=pts();
+let h=`<div class="bp bw" style="width:auto;top:10px" title="+10 PV max par niveau de compte">❤ +${(S.lvl-1)*10} PV de niveau</div><div class="ttl">Compétences</div><div class="pts">Niveau ${S.lvl} · Points disponibles : <b>${p}</b></div>`;
+TIERS.forEach((T,i)=>{
+const need=5*i+1,ch=S.sk[i];
+h+=`<div class="tl">Palier ${i+1}${S.lvl<need?' — débloqué au niveau '+need:ch?'':' — choisissez une branche'}</div>`;
+if(EXCL[i]!=null)h+=`<div class="hn" style="text-align:left;margin:-2px 0 6px">Impossible de reprendre la branche choisie au palier ${EXCL[i]+1}.</div>`;
+if(S.lvl<need){h+=`<div class="sk" style="grid-template-columns:repeat(${T.length},1fr)">`+T.map(b=>`<div class="sc pv"><div class="si">${b.i}</div><b>${b.n}</b>${b.m?`<div class="md">${b.m}</div>`:''}<div class="sd">Rang 1 : ${b.f(b.v[0])}<br>Rang 5 : ${b.f(b.v[4])}</div></div>`).join('')+'</div>';return}
+h+=`<div class="sk" style="grid-template-columns:repeat(${T.length},1fr)">`+T.map(b=>{
+const ban=banned(i,b.id),mine=ch&&ch.b==b.id,rk=mine?ch.r:0,other=(ch&&!mine)||ban,can=p>0&&!other&&rk<5;
+return `<div class="sc${mine?' on':''}${other?' off':''}"><div class="si">${b.i}</div><b>${b.n}</b>${b.m?`<div class="md">${b.m}</div>`:''}<div class="pips">${'●'.repeat(rk)}${'○'.repeat(5-rk)}</div><div class="sd">${rk?b.f(b.v[rk-1]):'Aucun bonus'}<br>${rk<5?'Suivant : '+b.f(b.v[rk]):'Rang maximum'}</div><button class="sb" data-sk="${i}:${b.id}" ${can?'':'disabled'}>${ban?'Déjà choisie':other?'Verrouillée':rk==0?'Choisir':rk<5?'Améliorer':'Max'}</button></div>`}).join('')+'</div>';
+});
+h+=`${5*TIERS.length+1<=MAXLV?`<p class="hn">Prochain palier : niveau ${5*TIERS.length+1} (bientôt disponible)</p>`:`<p class="hn">Niveau maximum : ${MAXLV}.</p>`}<div class="row2"><button class="b2" id="skr" ${spent()?'':'disabled'}>Réinitialiser</button></div>`;
+return h;
+}
+const fmtN=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+const CCAT=[{n:'Route déserte',from:0,to:4,d:'Personnages débloqués en jouant sur cette carte'},{n:'Rangers',from:4,to:9,d:'Personnages débloqués par le nombre de zombies tués'},{n:'Élite',from:9,to:14,d:'Personnages débloqués par le niveau de compte'}];
+let ctab=0;
+const sBlock=(l,v,pc,c)=>`<div class="stat"><span class="sl">${l}</span><b class="sv">${v}</b><i class="sbar"><u style="width:${Math.round(Math.max(0,Math.min(1,pc))*100)}%;background:${c}"></u></i></div>`;
+function charsMenu(){
+const PV=CH.map(c=>c.hp),SP=CH.map(c=>c.sp),mp=Math.max(...PV),ms=Math.max(...SP),DC=CH.map(c=>c.dg),mxd=Math.max(...DC);
+return `<div class="ttl">Personnages</div><div class="tabs">${CCAT.map((k,t)=>`<button class="tab${t==ctab?' on':''}" data-tab="${t}">${k.n}<small>${CH.slice(k.from,k.to).filter(c=>c.ok(S)).length}/${k.to-k.from}</small></button>`).join('')}</div><p class="hn" style="margin:0 0 8px">${CCAT[ctab].d}</p><div class="cs">${CH.map((c,i)=>{if(i<CCAT[ctab].from||i>=CCAT[ctab].to)return '';const o=c.ok(S);return `<button class="ch${i===sel?' on':''}${o?'':' lk'}" ${o?'':'disabled'} data-i="${i}"><div class="cv"><span class="av" style="background:${c.col}"></span><div class="cn"><b>${c.n}</b><small>${o?(i===sel?'✔ Sélectionné':'Disponible'):'🔒 Verrouillé'}</small></div></div><div class="stats s3">${sBlock('PV',PV[i],PV[i]/mp,'#66bb6a')}${sBlock('Vitesse',SP[i],SP[i]/ms,'#4dd0e1')}${sBlock('Dégâts',DC[i],DC[i]/mxd,'#ef5350')}</div><div class="cu${o?' done':''}">${o?'✔':'🔒'} ${c.u}${!o&&c.pg?'<br>Progression : '+c.pg(S):''}</div></button>`}).join('')}</div><button class="b2 w" data-s="home">← Retour</button>`;
+}
+function bestiary(){
+const L=[
+{t:'n',dr:'DESERT EAGLE',n:'Le marcheur',w:'Dès la vague 1',sp:Math.round(ZT.n.sp*1.25*1.015)+' → '+Math.round(ZT.n.sp*1.25*(1+14*.015)),d:'Hier encore, c’étaient des voisins, des collègues, des visages familiers. Il ne reste d’eux qu’une faim sourde et une démarche traînante. Seuls, ils sont lents. Mais ils ne sont jamais seuls.'},
+{t:'f',dr:'UZI',n:'L’affamé',w:'Dès la vague 5',sp:FAST,d:'Le virus a brûlé ses muscles jusqu’à la moelle. Il ne marche plus : il court, hurle, et ne s’arrête jamais. Ceux qui ont tenté de fuir n’ont pas eu le temps de regarder derrière eux.',x:'Aussi rapide que le Caporal.'},
+{t:'t',dr:'SAWED-OFF',n:'Le costaud',w:'Dès la vague 5',sp:Math.round(ZT.t.sp*1.25*1.075)+' → '+Math.round(ZT.t.sp*1.25*(1+14*.015)),d:'Docker, boucher ou videur, autrefois. Le virus a continué de le faire grandir : sa peau s’est durcie comme du cuir, ses poings frappent comme des marteaux. Il avance sans hâte, car rien de ce que vous lui envoyez ne semble l’arrêter.'},
+{t:'c',dr:'SSG-08',n:'Le rôdeur',w:'Dès la vague 7',sp:ZT.c.sp,d:'Moins vif que les affamés, plus coriace que les marcheurs : il vous traque sans relâche, au rythme régulier de ceux qui n’ont plus rien à perdre.'},
+{t:'x',dr:'AK47',n:'La brute',w:'Dès la vague 10',sp:ZT.x.sp,d:'Un ancien bagarreur, mal éteint. Il ne court pas, mais ses coups font plus de mal que ceux de n’importe quel autre infecté de sa taille.'},
+{t:'k',n:'Le rejeton',w:'Invoqué par le boss',sp:165,d:'Rien d’humain ne subsiste en eux : de petits corps tordus, nés des cris du boss. Ils ne mordent presque pas, mais s’accrochent à vos jambes et vous empêchent de fuir.',x:'Ralentit le joueur de 15 % tant qu’il est à son contact.'},
+{t:'B',n:'Le boss',w:'Vague 15',sp:155,d:'On murmure que c’est lui, le premier infecté. Le virus en a fait un colosse, et son hurlement fait naître des rejetons, qui surgissent autour de lui et aux quatre coins de la route. Il garde la dernière route. Personne n’est revenu pour dire s’il peut mourir.',x:'Toutes les 10 secondes : invoque 3 rejetons autour de lui et 4 aux coins de la carte.'}];
+return `<div class="ttl">Bestiaire</div>${L.map(e=>{if(!S.seen[e.t])return lockCard('Non rencontré','Aucune information. Croisez cet ennemi en partie pour débloquer sa fiche.');const z=ZT[e.t],spn=parseFloat(String(e.sp));return `<div class="be"><div class="bi"><span class="zd" style="width:${z.r*2}px;height:${z.r*2}px;background:${z.c}"></span></div><div class="bt"><div class="bh"><b class="bn">${e.n}</b><span class="tag">${e.w}</span></div><p class="bd">${e.d}</p><div class="stats">${sBlock('PV',z.hp,z.hp/110,'#66bb6a')}${sBlock('Vitesse',e.sp,spn/160,'#4dd0e1')}${sBlock('Dégâts',z.dmg,z.dmg/30,'#ef5350')}${sBlock('XP',z.xp,z.xp/5,'#ffca28')}</div>${e.x?`<div class="bs">⚠ ${e.x}</div>`:''}${e.dr?`<div class="bs" style="color:#8fd694">🎁 Peut lâcher : ${e.dr}</div>`:''}</div></div>`}).join('')}<p class="hn">Vitesse affichée : en alerte (hors champ de vision : −40 %). Un zombie s’alerte quand le joueur est à moins de 220 px ou quand il est touché. Barres : comparaison entre ennemis (le boss dépasse l’échelle).</p><button class="b2 w" data-s="wiki">← Retour</button>`;
+}
+function itemCards(){
+const I=[
+{k:'med',n:'Kit de soin',ic:'<span style="display:block;width:26px;height:26px;background:#2e9e4f;border-radius:4px;box-shadow:inset 0 0 0 3px #fff"></span>',d:'Une trousse de premiers secours échappée d’un sac éventré. Quelques bandages, un désinfectant, de quoi tenir encore un peu.',st:sBlock('Soin','30 PV',.6,'#66bb6a')+sBlock('Utilisation','Au contact',.5,'#4dd0e1'),x:'Lâché par tous les zombies. Maximum 3 par vague. Reste au sol jusqu’à ce qu’on le ramasse.'},
+{k:'nrg',n:'Boisson énergisante',ic:'<span style="display:block;width:14px;height:26px;background:#2b6cff;border-radius:3px;box-shadow:inset 0 -8px 0 #ffd23f"></span>',d:'Une canette tiède, oubliée au fond d’un distributeur. Le goût est écœurant, mais une gorgée suffit à vous remettre debout.',st:sBlock('Bonus','+10 % vit. & cadence',.5,'#ffca28')+sBlock('Durée','7 s',.5,'#4dd0e1')+sBlock('Cumul','Oui',1,'#b388ff'),x:'Lâchée par tous les zombies. Maximum 3 par vague. Les durées s’additionnent si on en boit plusieurs.'}];
+return I.map(e=>!S.seen[e.k]?lockCard('Non découvert','Aucune information. Trouvez cet objet au sol en partie pour débloquer sa fiche.'):`<div class="be"><div class="bi">${e.ic}</div><div class="bt"><div class="bh"><b class="bn">${e.n}</b></div><p class="bd">${e.d}</p><div class="stats">${e.st}</div><div class="bs">⚠ ${e.x}</div></div></div>`).join('')}
+function armory(){
+const L=[
+{k:'pistol',w:'Arme de départ',d:'Un pistolet automatique trouvé dans la boîte à gants d’une voiture abandonnée, son sélecteur de tir encore calé sur la rafale. Compact, fiable, facile à garder à la ceinture : on ne choisit pas toujours son arme, mais celle-ci n’a jamais laissé tomber personne.',x:'Les dégâts affichés sont ceux de base : chaque personnage a sa propre valeur de dégâts avec cette arme.'},
+{k:'deagle',w:'',x:'Perforation : la balle traverse un zombie et peut en toucher un second.',d:'Le pistolet des films de gangsters : énorme, bruyant, lourd à porter. Chaque détonation fait trembler le bras, mais ce que touche la balle de .50 ne se relève pas.'},
+{k:'uzi',w:'',d:'Un pistolet-mitrailleur compact, qui se vide en deux secondes dans un tonnerre de petits calibres. Peu de puissance par balle, mais une cadence folle : on arrose, on recule, on recharge.'},
+{k:'smg',w:'',d:'Le fusil d’assaut des vieux conflits, rouillé mais increvable : il tire encore sous la boue, la pluie et le sang. Son chargeur de 30 cartouches s’évapore en quelques secondes, mais devant une horde, c’est lui qui vous garde en vie.'},
+{k:'shotgun',w:'',d:'Un fusil de chasse à double canon dont un fermier a scié le bout, bien avant l’épidémie. Il ne sert à rien de loin, mais à bout portant, sa gerbe de plombs fauche tout ce qui s’approche.',x:'Tire 6 plombs par coup : dégâts totaux si tous touchent. Chaque plomb peut traverser un zombie et en toucher un second.'},
+{k:'rifle',w:'',x:'Perforation : une balle traverse jusqu’à 3 zombies en ligne, sans perte de dégâts.',d:'Un fusil à verrou et lunette, abandonné par un tireur isolé sur son toit, resté à son poste jusqu’au bout. Chaque balle compte : un seul coup bien placé, et même le costaud hésite. Sa balle blindée transperce les corps comme du papier.'}];
+const D=L.map(e=>WP[e.k].d*WP[e.k].p),F=L.map(e=>1/WP[e.k].r),M=L.map(e=>WP[e.k].m),Rl=L.map(e=>WP[e.k].rl),A=L.map(e=>1-WP[e.k].s),P=L.map((e,i)=>D[i]*F[i]),RG=L.map(e=>WP[e.k].rg);
+const mx=a=>Math.max(...a);
+return `<div class="ttl">Armurerie</div>${L.map((e,i)=>{if(!S.seen[e.k])return lockCard('Non découverte','Aucune information. Trouvez cette arme au sol en partie pour débloquer sa fiche.');const w=WP[e.k];return `<div class="be"><div class="bi"><span class="wd" style="background:${w.c}"></span></div><div class="bt"><div class="bh"><b class="bn">${w.n}</b>${e.w?`<span class="tag">${e.w}</span>`:''}</div><p class="bd">${e.d}</p><div class="stats">${sBlock('Dégâts / tir',w.p>1?w.d+' × '+w.p:w.d,D[i]/mx(D),'#ef5350')}${sBlock('Cadence',F[i].toFixed(1)+'/s',F[i]/mx(F),'#ffca28')}${sBlock('Chargeur',w.m,M[i]/mx(M),'#4dd0e1')}${sBlock('Rechargement',w.rl+' s',1-(Rl[i]-.5)/(mx(Rl)),'#66bb6a')}${sBlock('Précision',Math.round(A[i]*100)+' %',A[i],'#b388ff')}${sBlock('Portée',w.rt,w.rg/mx(RG),'#26c6da')}${sBlock('Tremblement',w.skt,w.sk/5,'#9e9e9e')}${sBlock('Perforation',(w.pr||1)>1?(w.pr+' zombies'):'Aucune',(w.pr||1)/3,'#f06292')}${sBlock('DPS théorique',Math.round(P[i]),P[i]/mx(P),'#ff7043')}</div>${e.x?`<div class="bs">⚠ ${e.x}</div>`:''}</div></div>`}).join('')}<div class="ttl" style="font-size:16px;margin:14px 0 8px">Équipement</div>${itemCards()}<p class="hn">Barres : comparaison entre armes. Les balles disparaissent au-delà de leur portée maximale. Rechargement : plus la barre est pleine, plus il est rapide.</p><button class="b2 w" data-s="wiki">← Retour</button>`;
+}
+const MAPS=[{n:'Route déserte',lmin:1,lmax:10,d:'Un champ en bordure de route nationale. Aucun abri, aucun obstacle : les morts viennent de partout.'},
+{n:'Route déserte - Invasion',inv:true,lmin:10,lmax:50,d:'La horde déferle sans fin sur la route nationale. Aucun boss, aucune pause : tenez le plus de vagues possible.'}];
+const HOUR=3600000,nextInv=()=>Math.ceil((Date.now()+1)/HOUR)*HOUR;
+const fmtT=ms=>{ms=Math.max(0,Math.ceil(ms/1000));const m=ms/60|0,s2=ms%60;return String(m).padStart(2,'0')+':'+String(s2).padStart(2,'0')};
+const fmtH=t=>new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+let invT=0;
+let selMap=0;
+function mapsMenu(){
+return `<div class="ttl">Choisir une carte</div>${MAPS.map((m,i)=>`<button class="mp" data-m="${i}"><div class="mpv"></div><div class="mpt"><b>${m.n}</b> ${m.inv?'<span class="tag">Toutes les heures</span>':''}<p>${m.d}</p>${m.inv?`<div class="xpn">Prochaine invasion : <b>${fmtH(nextInv())}</b> (dans <span class="mcd">${fmtT(nextInv()-Date.now())}</span>) · record : vague ${S.bm[i]||0}</div><small>Vagues infinies · sans boss · se lance à l’heure pile · vous pouvez vous promener sur la carte en attendant · ${CH[sel].n}</small>`:`<div class="xpn">Niveaux conseillés : ${m.lmin} à ${m.lmax}</div><small>15 vagues · boss final · ${CH[sel].n}</small>`}</div></button>`).join('')}<div class="mp off"><div class="mpv off"></div><div class="mpt"><b>🔒 Carte 2</b> <span class="tag">Dès le niveau 10</span><p>Bientôt disponible.</p></div></div><button class="b2 w" data-s="home">← Retour</button>`;
+}
+const backOf=sc=>sc=='bes'||sc=='arm'?'wiki':'home';
+let xpd=false;
+let scr='home';
+function menu(sc){
+if(!CH[sel].ok(S))sel=0;
+scr=sc||'home';ov.style.display='flex';ov.className='home';
+const pct=S.lvl>=MAXLV?100:Math.floor(100*S.xp/(xpNeed(S.lvl)));
+let h='';
+if(scr=='home')h=`<div class="logo">ZOMBIZ</div><div class="sub">THE LEGACY</div>${note?`<p class="note">${note}</p>`:''}
+<div class="bp"><div class="bpt">👑 Boss vaincus <small>${S.boss?1:0}/1</small></div><div class="bpr${S.boss?' ok':''}"><b>${S.seen.B||S.boss?'Le boss':'???'}</b><small>Route déserte</small><i>${S.boss?'✔ Vaincu':'🔒 Non vaincu'}</i></div></div>
+<div class="bp bw"><div class="bpt">🌊 Vague max</div>${MAPS.map((m,i)=>`<div class="bpr${!m.inv&&(S.bm[i]||0)>=15?' ok':''}"><b>${m.n}</b><i>${S.bm[i]||0}${m.inv?'':'/15'}</i></div>`).join('')}<div class="bpr"><b>Carte 2</b><i>🔒 Niveau 10</i></div></div>
+<div class="acct"><div id="xpb" class="xpc" title="Cliquer pour voir l’XP exact"><div class="lv">Niv. ${S.lvl} <span class="xp">${S.lvl>=MAXLV?'MAX':xpd?`${Math.floor(S.xp)} / ${Math.ceil(xpNeed(S.lvl))} XP · reste ${Math.ceil(xpNeed(S.lvl)-S.xp)}`:pct+' %'}</span></div><div class="xb"><i style="width:${pct}%"></i></div></div><div class="st"><span>☠ ${S.kills} zombies tués</span></div></div>
+<button class="big" id="bplay">▶ JOUER<small>Personnage : ${CH[sel].n}</small></button>
+<div class="row"><button class="b2" data-s="chars">Personnages</button><button class="b2" data-s="skills">Compétences${pts()>0?` <span class="bdg">${pts()}</span>`:''}</button><button class="b2" data-s="wiki">Wiki</button></div>`;
+else if(scr=='chars')h=charsMenu();
+else if(scr=='how')h=`<div class="ttl">Comment jouer</div><ul class="how"><li><b>ZQSD / flèches</b> : se déplacer</li><li><b>Souris</b> : viser et tirer</li><li><b>R</b> : recharger (automatique quand le chargeur est vide)</li><li><b>E</b> : ramasser une arme au sol · <b>1-3</b> : changer d’arme</li><li><b>Échap / P</b> : pause · <b>F</b> : plein écran</li><li><b>T</b> : poser la tourelle (compétence des paliers 6 et 10)</li><li>Cliquez sur la barre d’XP (accueil ou en partie) pour voir l’XP exact restant avant le prochain niveau.</li><li>Marchez sur une trousse verte pour vous soigner, et sur une canette bleue pour un bonus de 7 s.</li><li>Tuez tous les zombies pour lancer la vague suivante : 15 vagues, la dernière est un boss.</li></ul><button class="b2 w" data-s="home">← Retour</button>`;
+else if(scr=='skills')h=skillsMenu();
+else if(scr=='maps')h=mapsMenu();
+else if(scr=='wiki')h=`<div class="ttl">Wiki</div><p class="hn" style="margin:0 0 10px">Tout ce qu’il faut savoir pour survivre.</p><button class="b2 w wk" data-s="bes"><b>☠ Bestiaire</b><small>Les infectés : ${nSeen(WZ)}/${WZ.length} découverts</small></button><button class="b2 w wk" data-s="arm"><b>🔫 Armurerie</b><small>Armes et équipement : ${nSeen(WA)}/${WA.length} découverts</small></button><button class="b2 w" data-s="home">← Retour</button>`;
+else if(scr=='arm')h=armory();
+else if(scr=='patch')h=`<div class="ttl">Patch notes</div><div class="pt"><h3><span>v0.26 · Préparation du multijoueur</span></h3><ul><li>Le jeu gère maintenant une liste de joueurs (PV, armes, tourelle et bouclier propres à chacun). Rien ne change en solo.</li><li>En partie à plusieurs : notification et marque au sol à la mort d’un joueur, tous les joueurs visibles sur la minimap, et spectateur pour ceux qui rejoignent en cours de vague.</li></ul></div><div class="pt"><h3><span>v0.25 · Export et import de sauvegarde</span></h3><ul><li>Les outils de test (±1 niveau, niveau 50, niveau 1) sont retirés des Options.</li><li>Nouveau dans les Options : exporter sa sauvegarde en code (copier ou télécharger) et l’importer sur un autre navigateur ou un autre PC.</li><li>L’import vérifie le code et demande une confirmation avant de remplacer la sauvegarde.</li></ul></div><div class="pt"><h3><span>v0.24 · Ajustements de l’Invasion</span></h3><ul><li>Pendant l’attente, le joueur peut se promener sur la carte (sans zombies) : l’invasion démarre à l’heure pile sans relancer de partie.</li><li>Après la vague 15, les PV des zombies n’augmentent plus que de 1 % par vague (4 % avant).</li><li>Le délai entre deux vagues passe de 8 s à 3 s en Invasion.</li></ul></div><div class="pt"><h3><span>v0.23 · Mode Invasion</span></h3><ul><li>Nouvelle carte « Route déserte - Invasion » : vagues infinies, sans boss, jusqu’à la mort du joueur. Le tag « Très difficile » de la Route déserte est retiré.</li><li>L’invasion se lance à chaque heure pile, uniquement si le joueur attend sur l’écran d’attente de la carte.</li><li>Une pop-up en haut de l’écran affiche le compte à rebours dans les 10 minutes qui précèdent l’invasion.</li><li>La vague suivante se lance dès que tous les zombies sont morts, ou après 1 minute s’il en reste.</li><li>Difficulté croissante, un peu plus lente qu’en mode normal : +2 zombies par vague, zombies costauds, rôdeurs et brutes qui arrivent plus tard, et PV en hausse après la vague 15.</li></ul></div><div class="pt"><h3><span>v0.22 · Comportement des zombies</span></h3><ul><li>Les zombies avancent toujours vers le joueur, mais 40 % plus lentement qu’avant tant qu’il est hors de leur champ de vision.</li><li>Hors champ de vision, leur trajectoire est plus aléatoire : ils dévient et zigzaguent en approchant.</li><li>Ils retrouvent leur vitesse d’avant quand le joueur entre dans leur champ de vision (cercle de 220 px autour d’eux), ou dès qu’ils sont touchés (alerte définitive).</li></ul></div><div class="pt"><h3><span>v0.21 · Équilibrage des Rangers</span></h3><ul><li>Ranger bleu : 150 PV, vitesse 165, dégâts 30 ; déblocage à 5 000 zombies tués.</li><li>Ranger vert : 250 PV, vitesse 175, dégâts 34.</li><li>Ranger violet : 350 PV, vitesse 185, dégâts 38.</li><li>Ranger rouge : 450 PV, vitesse 195, dégâts 42.</li><li>Ranger jaune : 550 PV, vitesse 205, dégâts 46.</li></ul></div><div class="pt"><h3><span>v0.20 · Rangers et nouvelle catégorie Élite</span></h3><ul><li>Les Rangers se débloquent maintenant en tuant des zombies (cumulé sur le compte) : bleu 1 000, vert 10 000, violet 100 000, rouge 500 000, jaune 1 000 000.</li><li>Nouvelle catégorie « Élite » avec 5 personnages débloqués par le niveau de compte : Soldat (10), Mercenaire (20), Samouraï (30), Berserker (40), Rambo (50).</li></ul></div><div class="pt"><h3><span>v0.19 · Équilibrage des armes</span></h3><ul><li>UZI : cadence 13 tirs/s (12.5 avant), rechargement 0.7 s (1 s avant), précision 84 % (78 % avant).</li><li>AK47 : précision 90 % (88 % avant).</li></ul></div><div class="pt"><h3><span>v0.18 · Tremblement d’écran</span></h3><ul><li>L’écran tremble légèrement quand le joueur tire, selon l’arme : léger (GLOCK 18, UZI), moyen (AK47), fort (DESERT EAGLE, SAWED-OFF, SSG-08).</li><li>Amplitudes : léger 3 px, moyen 4 px, fort 5 px.</li><li>Nouvelle ligne « Tremblement » dans l’Armurerie.</li></ul></div><div class="pt"><h3><span>v0.17 · Balle supplémentaire</span></h3><ul><li>Nouvelle compétence « Balle supplémentaire » aux paliers 2, 5 et 9 : +1 / +2 / +3 / +4 / +5 balles par chargeur (toutes les armes).</li></ul></div><div class="pt"><h3><span>v0.16 · Tirs en traînées</span></h3><ul><li>Les balles s’affichent comme sur le fond de l’accueil : un trait lumineux qui va de l’arme au point d’impact ou à la fin de la portée, puis s’efface aussitôt.</li><li>Le trait reste attaché au joueur quand il se déplace en tirant.</li><li>Les balles sont désormais quasi instantanées (la portée de chaque arme ne change pas).</li></ul></div><div class="pt"><h3><span>v0.15 · Bouton Retour et touche Échap</span></h3><ul><li>Dans chaque menu, le bouton « Retour » est maintenant en haut à gauche et en bas à gauche.</li><li>La touche Échap revient au menu précédent (de la fiche du Bestiaire ou de l’Armurerie vers le Wiki, sinon vers l’accueil).</li></ul></div><div class="pt"><h3><span>v0.14 · PV bonus de niveau</span></h3><ul><li>Les PV bonus gagnés par le niveau de compte ne sont plus affichés à l’accueil : ils sont maintenant dans un coin du menu Compétences.</li></ul></div><div class="pt"><h3><span>v0.13 · Vague max par carte</span></h3><ul><li>Nouvelle fenêtre à droite de l’accueil : vague maximale atteinte sur chaque carte.</li><li>La vague max a quitté la barre de stats centrale.</li></ul></div><div class="pt"><h3><span>v0.12 · Fenêtre des boss vaincus</span></h3><ul><li>Nouvelle fenêtre à gauche de l’accueil qui affiche les boss vaincus.</li><li>L’information « Boss vaincu » a quitté la barre de stats centrale.</li></ul></div><div class="pt"><h3><span>v0.11 · Wiki à débloquer</span></h3><ul><li>Les fiches du Bestiaire et de l’Armurerie doivent être débloquées : il faut avoir vu l’ennemi, l’arme ou l’objet en partie au moins une fois.</li><li>Les fiches non débloquées sont masquées (« ??? »). Un message en partie signale chaque nouvelle entrée.</li><li>Nouvelles fiches dans l’Armurerie : le kit de soin et la boisson énergisante.</li></ul></div><div class="pt"><h3><span>v0.10 · Raccourcis de l’accueil</span></h3><ul><li>« Comment jouer » (❓) et « Options » (⚙️) sont maintenant de petites icônes en bas à gauche de l’accueil.</li></ul></div><div class="pt"><h3><span>v0.9 · Refonte de la tourelle</span></h3><ul><li>La tourelle tire 2 fois plus lentement (un tir toutes les 0,6 s au lieu de 0,3 s).</li><li>Ses dégâts sont doublés : 12 / 18 / 24 / 30 / 36 selon le rang.</li></ul></div><div class="pt"><h3><span>v0.8 · Équilibrage des soins</span></h3><ul><li>Trousses de soin : 6 % par zombie tué (12 % avant), maximum 3 par vague.</li><li>Canettes : 3 % par zombie tué (5 % avant), maximum 3 par vague.</li><li>Les canettes se cumulent : boire plusieurs canettes additionne les durées (7 s chacune).</li></ul></div><div class="pt"><h3><span>v0.7 · Refonte du boss</span></h3><ul><li>Le boss n’invoque plus d’affamés : il invoque des rejetons, des zombies uniques (165 de vitesse, 5 dégâts, 20 PV).</li><li>Un rejeton au contact du joueur le ralentit de 15 %.</li><li>3 rejetons apparaissent autour du boss et 4 aux coins de la carte, toutes les 10 secondes.</li><li>Vitesse du boss : 155.</li><li>Nouvelle fiche « Le rejeton » dans le bestiaire.</li></ul></div><div class="pt"><h3><span>v0.6 · Nouvelles armes et taux de drop</span></h3><ul><li>Ajout du DESERT EAGLE (marcheur, 8 %) : 30 dégâts, 1.9 tir/s, chargeur 7, précision 95 %.</li><li>Ajout de l’UZI (affamé, 10 %) : 6 dégâts, 12.5 tirs/s, chargeur 25, précision 78 %.</li><li>GLOCK 18 : chargeur porté à 20.</li><li>SAWED-OFF : 15 × 6 dégâts, taux de drop 10 %.</li><li>Perforation de 2 zombies pour le DESERT EAGLE et le SAWED-OFF.</li><li>SSG-08 : taux de drop 10 % ; AK47 : 5 %, et la brute ne lâche plus que l’AK47.</li><li>Portées de toutes les armes réduites de 50 %.</li></ul></div><div class="pt"><h3><span>v0.5 · Rework des armes</span></h3><ul><li>Armes renommées : GLOCK 18, AK47, SAWED-OFF, SSG-08, avec un lore adapté.</li><li>Nouvelle statistique de portée (courte, moyenne, longue) : les balles disparaissent hors de portée.</li><li>Perforation du SSG-08 : traverse jusqu’à 3 zombies.</li><li>Les armes se drop sur des zombies précis (indiqué dans le bestiaire).</li></ul></div><div class="pt"><h3><span>v0.4 · Menu Wiki</span></h3><ul><li>Nouveau menu Wiki à l’accueil : Bestiaire et Armurerie.</li><li>L’Armurerie détaille les stats de chaque arme.</li><li>Les stats des personnages n’incluent plus les bonus de compétences ni de niveau.</li></ul></div><div class="pt"><h3><span>v0.3 · Personnages et zombies</span></h3><ul><li>Personnages militaires renommés (Éclaireur, Fantassin, Caporal), avec dégâts fixes et conditions de déblocage.</li><li>Ajout des 5 Rangers (niveaux de compte 10, 20, 30, 40, 50) et des onglets par catégorie.</li><li>Nouveaux zombies : le rôdeur et la brute ; zombies renommés (marcheur, affamé, costaud).</li><li>Les objets au sol ne disparaissent plus.</li></ul></div><div class="pt"><h3><span>v0.2 · Progression</span></h3><ul><li>Arbre de compétences sur 10 paliers (dégâts, PV, soins, bouclier, tourelle…).</li><li>Niveau de compte maximum : 50, courbe d’XP exponentielle, XP fixe par type de zombie.</li><li>Clic sur la barre d’XP pour voir l’XP exact.</li></ul></div><div class="pt"><h3><span>v0.1 · Lancement de Zombiz The Legacy</span></h3><ul><li>Mode vagues : 15 vagues, boss final, drops d’armes, chargeurs par arme.</li><li>Écran d’accueil, choix de la carte, bestiaire, pause, plein écran.</li></ul></div><button class="b2 w" data-s="home">← Retour</button>`;
+else if(scr=='bes')h=bestiary();
+else h=`<div class="ttl">Options</div><button class="b2 w" id="o1">${document.body.classList.contains('fit')?'✔ ':''}Afficher sur toute la fenêtre</button><button class="b2 w" id="o2">Plein écran (touche F)</button><p class="hn">Sauvegarde du compte</p><div class="row2"><button class="b2" id="sx">📤 Exporter</button><button class="b2" id="si">📥 Importer</button></div><textarea id="svt" class="sv" rows="3" placeholder="Exporter : le code apparaît ici. Importer : collez votre code ici (ou choisissez un fichier)."></textarea><div class="row2"><button class="b2" id="scp">Copier le code</button><button class="b2" id="sdl">Télécharger un fichier</button></div><button class="b2 w" id="sfl">Importer depuis un fichier…</button><input type="file" id="sff" accept=".txt,.json" style="display:none"><p class="hn" id="smsg"></p><button class="b2 w" data-s="home">← Retour</button>`;
+if(scr!='home'){const bk=backOf(scr);h=h.replace(/<button class="b2 w" data-s="(home|wiki)">← Retour<\/button>/,'');h=`<button class="b2 bk bkt" data-s="${bk}" title="Retour (Échap)">← Retour</button>${h}<div class="bkb"><button class="b2 bk" data-s="${bk}">← Retour</button></div>`}
+ov.innerHTML=`<div class="hm">${h}</div>`;
+ov.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{if(b.dataset.s=='chars')ctab=Math.max(0,CCAT.findIndex(k=>sel>=k.from&&sel<k.to));menu(b.dataset.s)});
+ov.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{ctab=+b.dataset.tab;menu('chars')});
+ov.querySelectorAll('.ch').forEach(b=>b.onclick=()=>{sel=+b.dataset.i;menu('chars')});
+const q=id=>document.getElementById(id);
+if(q('bplay'))q('bplay').onclick=()=>menu('maps');
+ov.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{selMap=+b.dataset.m;if(MAPS[selMap].inv){invT=nextInv();ov.style.display='none';ov.className='';note='';start();G.lobby=true;return}ov.style.display='none';ov.className='';note='';start()});
+if(q('o1'))q('o1').onclick=()=>{document.body.classList.toggle('fit');menu('opt')};
+if(q('o2'))q('o2').onclick=()=>fs();
+if(q('sx')){const t=q('svt'),m=q('smsg');let pend=null;
+const say=x=>{m.textContent=x};
+const enc=()=>'ZBZ1:'+btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+const dec=str=>{str=String(str).trim();let j=str;if(str.startsWith('ZBZ1:'))j=decodeURIComponent(escape(atob(str.slice(5))));const o=JSON.parse(j);if(!o||typeof o!='object'||typeof o.lvl!='number'||typeof o.kills!='number')throw 0;return o};
+q('sx').onclick=()=>{pend=null;t.value=enc();say('Code généré. Copiez-le ou téléchargez-le pour le garder en lieu sûr.')};
+q('scp').onclick=()=>{if(!t.value)t.value=enc();t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}if(!ok&&navigator.clipboard)navigator.clipboard.writeText(t.value).then(()=>say('Code copié.'),()=>say('Copie impossible : sélectionnez le texte et copiez-le à la main.'));else say(ok?'Code copié.':'Copie impossible : sélectionnez le texte et copiez-le à la main.')};
+q('sdl').onclick=async()=>{if(!t.value)t.value=enc();try{const dl=window.claude&&claude.use?await claude.use('downloads'):null;if(dl){await dl.save({filename:'zombiz-sauvegarde.txt',data:t.value});say('Fichier enregistré.');return}}catch(e){say(e&&e.code=='declined'?'Téléchargement annulé.':'Téléchargement impossible ici : utilisez « Copier le code ».');return}try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t.value],{type:'text/plain'}));a.download='zombiz-sauvegarde.txt';document.body.appendChild(a);a.click();a.remove();say('Fichier téléchargé.')}catch(e){say('Téléchargement impossible ici : utilisez « Copier le code ».')}};
+const doImp=()=>{let o;try{o=dec(t.value)}catch(e){pend=null;say('Code invalide : rien n’a été modifié.');return}
+const sig=JSON.stringify(o);
+if(pend!==sig){pend=sig;say('Cette sauvegarde (niveau '+Math.round(o.lvl)+', '+o.kills+' zombies tués) remplacera la vôtre. Cliquez de nouveau sur « Importer » pour confirmer.');return}
+pend=null;const n=Object.assign({best:0,kills:0,boss:false,lvl:1,xp:0},o);
+n.lvl=Math.max(1,Math.min(MAXLV,Math.round(n.lvl)||1));n.kills=Math.max(0,Math.round(n.kills)||0);n.xp=Math.max(0,+n.xp||0);n.best=Math.max(0,Math.round(n.best)||0);n.boss=!!n.boss;
+if(!Array.isArray(n.sk))n.sk=[];if(!Array.isArray(n.bm))n.bm=[n.best||0];if(!n.seen||typeof n.seen!='object')n.seen={};n.seen.pistol=1;
+n.sk=n.sk.slice(0,TIERS.length).map((x,i)=>x&&TIERS[i]&&TIERS[i].some(b=>b.id==x.b)&&x.r>=1&&x.r<=5?{b:x.b,r:Math.round(x.r)}:null);
+if(n.sk.reduce((a,x)=>a+(x?x.r:0),0)>n.lvl)n.sk=[];
+S=n;sel=0;save();say('Sauvegarde importée : niveau '+S.lvl+', '+S.kills+' zombies tués.')};
+q('si').onclick=doImp;
+q('sfl').onclick=()=>q('sff').click();
+q('sff').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{t.value=String(rd.result).trim();pend=null;say('Fichier chargé. Cliquez sur « Importer » pour l’appliquer.')};rd.readAsText(f)}}
+if(q('xpb'))q('xpb').onclick=()=>{xpd=!xpd;menu('home')};
+ov.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>{const a=b.dataset.sk.split(':');upSkill(+a[0],a[1]);menu('skills')});
+if(q('skr'))q('skr').onclick=()=>{S.sk=[];save();menu('skills')};
+}
+function mkPlayer(ci,lvl,sk,name,id,local){
+const c=CH[ci],bn=skillBonus(sk),mh=c.hp+(lvl-1)*10+bn.hp,SHM=Math.round(mh*.2*bn.sh),w0={k:'pistol',a:WP.pistol.m+bn.mag};
+return{id,name,local,alive:true,late:false,x:WW/2,y:WH/2,hp:mh,max:mh,sp:c.sp+bn.spd,dg:c.dg,col:c.col,w:w0,inv:[w0,null,null],cur:0,cd:0,rl:0,hit:0,a:0,nrg:0,dmgB:bn.dmg,mg:bn.mag,fr:1+bn.fr/100,hb:bn.heal/100,ne:1.1+bn.nrg/100,rr:1+bn.rl/100,shm:SHM,sh:SHM,sr:.1*bn.sh,tu:bn.tu,tur:null,tcd:0,slw:0,kills:0,xpg:0,in:{dx:0,dy:0,ax:0,ay:0,fire:false,rel:false}};
+}
+function start(){
+const p=mkPlayer(sel,S.lvl,S.sk,'Vous',0,true);
+G={cx:0,cy:0,p,ps:[p],marks:[],z:[],b:[],tr:[],d:[],bl:[],fx:[],log:[],xp:0,lvl:1,time:0,wave:0,map:MAPS[selMap],inv:!!MAPS[selMap].inv,ub:CH.map(c=>c.ok(S)),cl:false,kills:0,st:'play',nw:0,msg:'',mt:0};
+if(!G.inv)nextWave();
+}
+// Ajoute un joueur (utilisé par le multijoueur et par les tests). En pleine vague, il est spectateur jusqu'à la suivante.
+function addPlayer(ci,lvl,sk,name){
+const g=G,id=g.ps.length,pl=mkPlayer(ci,lvl,sk,name||'Joueur '+(id+1),id,false);
+pl.x=WW/2+(id%5-2)*30;pl.y=WH/2+(id/5|0)*30;
+const mid=g.z.length>0&&!g.lobby;
+if(mid){pl.alive=false;pl.late=true}
+g.ps.push(pl);g.log.push({t:5,c:'#8fd694',s:'➜ '+pl.name+' a rejoint la partie'+(mid?' (spectateur jusqu’à la prochaine vague)':'')});
+return pl;
+}
+function mk(t,w){
+const e=Math.random()*4|0,r=Math.random();let px,py;
+if(e==0){px=-20;py=r*WH}else if(e==1){px=WW+20;py=r*WH}else if(e==2){px=r*WW;py=-20}else{px=r*WW;py=WH+20}
+const T=ZT[t],h=T.hp;
+return{x:px,y:py,t,hp:h,max:h,sp:t=='B'?155:t=='f'?FAST:t=='c'||t=='x'||t=='k'?T.sp:Math.min(145,T.sp*(1+w*.015)*1.25),r:T.r,dmg:T.dmg,c:T.c,cd:0};
+}
+function nextWave(){
+const g=G,w=++g.wave;g.nw=g.inv?3:8;g.marks=[];for(const pl of g.ps)if(pl.late){pl.late=false;pl.alive=true;pl.hp=pl.max;pl.sh=pl.shm;const f=g.ps.find(q=>q.alive&&q!==pl);if(f){pl.x=f.x;pl.y=f.y}}g.cl=false;g.mc=0;g.nc=0;g.wt=0;
+if(!g.inv&&w>S.best)S.best=w;
+if(w>(S.bm[selMap]||0))S.bm[selMap]=w;
+save();
+if(g.inv){const n=Math.round(6+w*2.2),we=Math.floor(w*.8),hm=1+.01*Math.max(0,w-15);for(let i=0;i<n;i++){const r=Math.random(),m=mk(we>=5&&r<.25?'t':we>=5&&r<.5?'f':we>=7&&r<.62?'c':we>=10&&r<.72?'x':'n',w);m.hp*=hm;m.max*=hm;g.z.push(m)}g.msg='Invasion – vague '+w}
+else if(w==15){g.z.push(mk('B',w));g.msg='BOSS !'}
+else{
+const n=6+w*3;
+for(let i=0;i<n;i++){const r=Math.random();g.z.push(mk(w>=5&&r<.25?'t':w>=5&&r<.5?'f':w>=7&&r<.62?'c':w>=10&&r<.72?'x':'n',w))}
+g.msg='Vague '+w+' / 15';
+}
+if(!g.inv&&w==7)g.log.push({t:7,s:'⚠ Des rôdeurs approchent !'});
+if(!g.inv&&w==10)g.log.push({t:7,s:'⚠ Des brutes arrivent !'});
+g.mt=2;
+}
+function end(win){
+const before=G.ub||CH.map(c=>c.ok(S));
+if(win)S.boss=true;save();
+const nw=CH.filter((c,i)=>!before[i]&&c.ok(S)).map(c=>c.n);
+note=(G.inv?'Invasion terminée : vague '+G.wave+' atteinte.':win?'Victoire ! Vous avez vaincu le boss.':'Vous êtes mort à la vague '+G.wave+'.')+' '+G.kills+' zombies tués.'+(nw.length?' Personnage débloqué : '+nw.join(', ')+' !':'');
+G.st='end';menu();
+}
+function pick(p=G&&G.p){
+if(!G||G.st!='play'||!p||!p.alive)return;
+const d=G.d.find(d=>d.k!='med'&&d.k!='nrg'&&Math.hypot(d.x-p.x,d.y-p.y)<26);
+if(!d)return;
+G.d.splice(G.d.indexOf(d),1);
+const nw={k:d.k,a:d.a},f=p.inv.indexOf(null);
+if(f>=0)p.cur=f;else G.d.push({x:d.x,y:d.y,k:p.w.k,a:p.w.a,t:20});
+p.inv[p.cur]=nw;p.w=nw;p.rl=0;
+if(p.local)G.log.push({t:6,s:'Vous avez trouvé : '+WP[d.k].n+' !'});
+}
+function hurt(p,d){if(p.sh>0){const a=Math.min(p.sh,d);p.sh-=a;d-=a}p.hp-=d}
+function placeTur(p=G&&G.p){
+const g=G;if(!g||g.st!='play'||!p||!p.alive||!p.tu)return;
+if(p.tcd>0){if(p.local)g.log.push({t:3,s:'Tourelle indisponible : '+Math.ceil(p.tcd)+' s'});return}
+p.tur={x:p.x,y:p.y,cd:0,a:p.a};p.tcd=10;
+if(p.local)g.log.push({t:4,s:'Tourelle déployée.'});
+}
+function dead(pl){
+const g=G;pl.alive=false;pl.hp=0;
+if(g.ps.length>1){g.marks.push({x:pl.x,y:pl.y,n:pl.name,col:pl.col});g.log.push({t:7,c:'#ff5252',s:'☠ '+pl.name+' est mort (vague '+g.wave+')'})}
+if(!g.ps.some(q=>q.alive)){end(false);return true}
+return false;
+}
+function upd(dt){
+const g=G,p=g.p,ps=g.ps;
+g.shk=Math.max(0,(g.shk||0)-dt*30);
+{const i=p.in;i.dx=(K.KeyD||K.ArrowRight?1:0)-(K.KeyA||K.ArrowLeft?1:0);i.dy=(K.KeyS||K.ArrowDown?1:0)-(K.KeyW||K.ArrowUp?1:0);i.fire=M.down;i.rel=!!K.KeyR}
+for(const pl of ps){pl.slw=(pl.slw||0)-dt;if(!pl.alive)continue;
+const dx=pl.in.dx,dy=pl.in.dy;
+if(dx||dy){const l=Math.hypot(dx,dy),sp=pl.sp*(pl.nrg>0?pl.ne:1)*(pl.slw>0?.85:1);pl.x=Math.max(12,Math.min(WW-12,pl.x+dx/l*sp*dt));pl.y=Math.max(12,Math.min(WH-12,pl.y+dy/l*sp*dt))}
+for(const z of g.z){const ddx=pl.x-z.x,ddy=pl.y-z.y,m=z.r+12,d=Math.hypot(ddx,ddy)||.01;if(d<m){pl.x=z.x+ddx/d*m;pl.y=z.y+ddy/d*m}}
+pl.x=Math.max(12,Math.min(WW-12,pl.x));pl.y=Math.max(12,Math.min(WH-12,pl.y));}
+{const cam=p.alive?p:(ps.find(q=>q.alive)||p);g.cx=Math.max(0,Math.min(WW-W,cam.x-W/2));g.cy=Math.max(0,Math.min(WH-H,cam.y-H/2))}
+if(p.alive){p.in.ax=M.x+g.cx;p.in.ay=M.y+g.cy}
+g.mt-=dt;
+for(const pl of ps){if(!pl.alive)continue;
+pl.a=Math.atan2(pl.in.ay-pl.y,pl.in.ax-pl.x);
+const w=pl.w,d=WP[w.k];pl.cd-=dt;pl.hit-=dt;pl.nrg=Math.max(0,pl.nrg-dt);pl.tcd=Math.max(0,pl.tcd-dt);
+if(pl.rl>0){pl.rl-=dt;if(pl.rl<=0){w.a=d.m+pl.mg;pl.rl=0}}
+else if(w.a<=0||(pl.in.rel&&w.a<d.m+pl.mg)){pl.rl=d.rl/pl.rr}
+else if(pl.in.fire&&pl.cd<=0){
+for(let i=0;i<d.p;i++){const a=pl.a+(Math.random()-.5)*2*d.s;g.b.push({own:pl,o:pl,ox0:Math.cos(a)*18,oy0:Math.sin(a)*18,ox:pl.x+Math.cos(a)*18,oy:pl.y+Math.sin(a)*18,x:pl.x+Math.cos(a)*18,y:pl.y+Math.sin(a)*18,vx:Math.cos(a)*BV,vy:Math.sin(a)*BV,d:Math.max(1,d.d*pl.dg/WP.pistol.d+pl.dmgB),l:d.rg/BV,pr:d.pr||1,h:[]})}
+w.a--;pl.cd=d.r/((pl.nrg>0?pl.ne:1)*pl.fr);if(pl===p)g.shk=Math.max(g.shk||0,d.sk||0);
+}
+}
+for(const b of g.b){
+const ns=Math.max(1,Math.ceil(Math.hypot(b.vx,b.vy)*dt/6)),sd=dt/ns;
+for(let st=0;st<ns&&b.l>0;st++){
+b.x+=b.vx*sd;b.y+=b.vy*sd;b.l-=sd;
+for(const z of g.z){
+if(z.hp>0&&!(b.h&&b.h.includes(z))&&Math.hypot(z.x-b.x,z.y-b.y)<z.r+3){
+z.hp-=b.d;z.al=1;if(b.h)b.h.push(z);if(--b.pr<=0||b.pr!==b.pr)b.l=0;g.fx.push({x:z.x,y:z.y-z.r,t:.7,s:Math.round(b.d)});g.bl.push({x:z.x+Math.random()*10-5,y:z.y+Math.random()*10-5,r:2+Math.random()*3});if(g.bl.length>200)g.bl.shift();
+if(z.hp<=0){
+const o=b.o;g.kills++;if(o){o.kills++;o.xpg+=ZT[z.t].xp}
+if(o&&o.local){S.kills++;if(S.lvl<MAXLV)S.xp+=ZT[z.t].xp;if(S.lvl<MAXLV&&S.xp>=xpNeed(S.lvl)){S.xp-=xpNeed(S.lvl);S.lvl++;if(S.lvl>=MAXLV)S.xp=0;o.max+=10;o.hp+=10;g.log.push({t:6,s:'Niveau '+S.lvl+' ! Un point de compétence est disponible.'})}}
+if(z.t=='B')g.msg='Boss vaincu ! Achevez les zombies restants.',g.mt=3;
+const q=Math.random();if(q<.06){if((g.mc||0)<3){g.mc=(g.mc||0)+1;g.d.push({x:z.x,y:z.y,k:'med',a:0,t:20})}}else if(q<.09){if((g.nc||0)<3){g.nc=(g.nc||0)+1;g.d.push({x:z.x,y:z.y,k:'nrg',a:0,t:20})}}
+const W1=WD[z.t];if(W1&&Math.random()<W1[1]){const k=W1[0];g.d.push({x:z.x+(q<.09?14:0),y:z.y,k,a:WP[k].m+((o&&o.mg)||0),t:20})}
+}
+if(b.l<=0)break;
+}
+}
+}
+}
+{const keep=[];for(const b of g.b){if(b.l>0&&b.x>-20&&b.x<WW+20&&b.y>-20&&b.y<WH+20)keep.push(b);else if(b.ox!=null)g.tr.push({own:b.own,ox0:b.ox0,oy0:b.oy0,x1:b.ox,y1:b.oy,x2:b.x,y2:b.y,t:.08})}g.b=keep;g.tr=g.tr.filter(q=>(q.t-=dt)>0)}
+g.z=g.z.filter(z=>z.hp>0);
+const alive=ps.filter(q=>q.alive);
+for(const z of g.z){
+z.cd-=dt;
+let tp=null,bd=1e9;for(const q of alive){const d2=(q.x-z.x)*(q.x-z.x)+(q.y-z.y)*(q.y-z.y);if(d2<bd){bd=d2;tp=q}}
+if(!tp)continue;
+const al=z.al||Math.sqrt(bd)<VIS;
+z.wt=(z.wt||0)-dt;if(z.wt<=0){z.wt=.7+Math.random()*1.1;z.tg=(Math.random()-.5)*2.4}
+z.of=(z.of||0)+((al?0:z.tg||0)-(z.of||0))*Math.min(1,dt*3);
+const a=Math.atan2(tp.y-z.y,tp.x-z.x)+z.of,fs=al?1:.6;z.x=Math.max(0,Math.min(WW,z.x+Math.cos(a)*z.sp*fs*dt));z.y=Math.max(0,Math.min(WH,z.y+Math.sin(a)*z.sp*fs*dt));
+}
+for(let i=0;i<g.z.length;i++)for(let j=i+1;j<g.z.length;j++){
+const A=g.z[i],B=g.z[j],ddx=B.x-A.x,ddy=B.y-A.y,m=(A.r+B.r)*.85,d2=ddx*ddx+ddy*ddy;
+if(d2<m*m){const d=Math.sqrt(d2)||.01,nx=ddx/d,ny=ddy/d,wa=B.r*B.r/(A.r*A.r+B.r*B.r);A.x-=nx*(m-d)*wa;A.y-=ny*(m-d)*wa;B.x+=nx*(m-d)*(1-wa);B.y+=ny*(m-d)*(1-wa)}
+}
+for(const z of g.z){for(const pl of alive){if(!pl.alive)continue;
+const ddx=z.x-pl.x,ddy=z.y-pl.y,m=z.r+12,d=Math.hypot(ddx,ddy)||.01;
+if(d<m){z.x=pl.x+ddx/d*m;z.y=pl.y+ddy/d*m}
+if(z.t=='k'&&d<m+4)pl.slw=.1;
+if(d<m+4&&z.cd<=0){hurt(pl,z.dmg);z.cd=.8;pl.hit=.15;if(pl.hp<=0&&dead(pl))return}
+}}
+for(const pl of ps){if(!pl.alive||!pl.tur)continue;const T=pl.tur,tr=TUR[pl.tu-1];T.cd-=dt;
+let tg=null,bdist=1e9;
+for(const z of g.z){const d=Math.hypot(z.x-T.x,z.y-T.y);if(d<tr.r+z.r&&d<bdist){bdist=d;tg=z}}
+if(tg){T.a=Math.atan2(tg.y-T.y,tg.x-T.x);if(T.cd<=0){T.cd=.6;g.b.push({o:pl,ox:T.x+Math.cos(T.a)*14,oy:T.y+Math.sin(T.a)*14,x:T.x+Math.cos(T.a)*14,y:T.y+Math.sin(T.a)*14,vx:Math.cos(T.a)*BV,vy:Math.sin(T.a)*BV,d:tr.d,l:(tr.r+30)/BV})}}}
+{let nw=false;const seeIt=(k)=>{if(!S.seen[k]){S.seen[k]=1;nw=true;g.log.push({t:5,s:'Wiki : nouvelle entrée débloquée — '+wnm(k)})}};
+for(const z of g.z)if(!S.seen[z.t]&&z.x>g.cx-z.r&&z.x<g.cx+W+z.r&&z.y>g.cy-z.r&&z.y<g.cy+H+z.r)seeIt(z.t);
+for(const d of g.d)if(!S.seen[d.k]&&d.x>g.cx&&d.x<g.cx+W&&d.y>g.cy&&d.y<g.cy+H)seeIt(d.k);
+if(nw)save()}
+const bo=g.z.find(z=>z.t=='B');
+if(bo){bo.sc=(bo.sc==null?5:bo.sc)-dt;if(bo.sc<=0){bo.sc=10;for(let i=0;i<3;i++){const a=i*2.0944+Math.random(),m=mk('k',g.wave);m.x=bo.x+Math.cos(a)*(bo.r+30);m.y=bo.y+Math.sin(a)*(bo.r+30);g.z.push(m)}for(const [cx,cy] of [[30,30],[WW-30,30],[30,WH-30],[WW-30,WH-30]]){const m=mk('k',g.wave);m.x=cx;m.y=cy;g.z.push(m)}}}
+g.time+=dt;
+for(const f of g.fx){f.t-=dt;f.y-=30*dt}
+g.fx=g.fx.filter(f=>f.t>0);
+for(const l of g.log)l.t-=dt;
+g.log=g.log.filter(l=>l.t>0);
+for(const d of g.d){if(d.k!='med'&&d.k!='nrg')continue;for(const pl of ps){if(!pl.alive||d.t<=0)continue;if(Math.hypot(d.x-pl.x,d.y-pl.y)<18){if(d.k=='med')pl.hp=Math.min(pl.max,pl.hp+30+pl.max*pl.hb);else pl.nrg+=7;d.t=0}}}
+g.d=g.d.filter(d=>d.t>0);
+g.wt=(g.wt||0)+dt;
+if(g.lobby){g.msg='Invasion dans '+fmtT(invT-Date.now());g.mt=1;if(Date.now()>=invT){g.lobby=false;nextWave()}}
+else{if(g.inv&&g.z.length&&g.wt>=60)nextWave();
+if(!g.z.length){if(!g.inv&&g.wave>=15){end(true);return}if(!g.cl){g.cl=true;for(const pl of ps)if(pl.alive&&pl.shm>0)pl.sh=Math.min(pl.shm,pl.sh+pl.shm*pl.sr)}g.nw-=dt;g.msg='Vague '+(g.wave+1)+' dans '+Math.ceil(g.nw)+' s';g.mt=1;if(g.nw<=0)nextWave()}}
+}
+function circ(px,py,r,c){x.fillStyle=c;x.beginPath();x.arc(px,py,r,0,7);x.fill()}
+function draw(){
+const rc=cv.getBoundingClientRect(),k=Math.min(3,Math.max(1,rc.width*(window.devicePixelRatio||1)/W)),cw=Math.round(W*k),ch=Math.round(H*k);
+if(cv.width!=cw||cv.height!=ch){cv.width=cw;cv.height=ch}
+x.setTransform(k,0,0,k,0,0);
+if(!G||G.st=='end'){drawHome();return}
+x.fillStyle='#41602a';x.fillRect(0,0,W,H);
+const g=G,p=g.p;
+x.save();{const sa=g.shk||0;x.translate(-g.cx+(Math.random()-.5)*2*sa,-g.cy+(Math.random()-.5)*2*sa)}
+x.fillStyle='#4c4f54';x.fillRect(WW/2-70,0,140,WH);
+x.fillStyle='#d8d8d8';for(let j=10;j<WH;j+=60)x.fillRect(WW/2-2,j,4,30);
+x.strokeStyle='#2c3f1b';x.lineWidth=6;x.strokeRect(0,0,WW,WH);
+x.fillStyle='rgba(150,15,15,.55)';
+for(const s of g.bl){x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fill()}
+x.textAlign='center';x.font='11px system-ui,sans-serif';
+for(const d of g.d){
+if(d.k=='med'){x.fillStyle='#1f7a2e';x.fillRect(d.x-9,d.y-9,18,18);x.fillStyle='#fff';x.fillRect(d.x-1.5,d.y-6,3,12);x.fillRect(d.x-6,d.y-1.5,12,3);continue}
+if(d.k=='nrg'){x.fillStyle='#2b6cff';x.fillRect(d.x-5,d.y-9,10,18);x.fillStyle='#ffd23f';x.fillRect(d.x-5,d.y-3,10,5);continue}
+const near=Math.hypot(d.x-p.x,d.y-p.y)<26;
+x.fillStyle=WP[d.k].c;x.fillRect(d.x-10,d.y-5,20,10);
+x.strokeStyle=near?'#fff':'#000';x.strokeRect(d.x-10,d.y-5,20,10);
+x.fillStyle='#fff';x.fillText(WP[d.k].n+(near?' [E]':''),d.x,d.y-10);
+}
+for(const m of g.marks){x.save();x.translate(m.x,m.y);x.globalAlpha=.9;x.fillStyle='#7a7f86';x.beginPath();x.moveTo(-9,10);x.lineTo(-9,-4);x.arc(0,-4,9,Math.PI,0);x.lineTo(9,10);x.closePath();x.fill();x.strokeStyle='#2a2d30';x.lineWidth=1.5;x.stroke();x.fillStyle='#2a2d30';x.fillRect(-1.5,-8,3,12);x.fillRect(-5,-4,10,3);x.globalAlpha=1;x.restore();x.fillStyle=m.col;x.font='bold 11px system-ui,sans-serif';x.textAlign='center';x.fillText('☠ '+m.n,m.x,m.y-20)}
+for(const z of g.z){
+circ(z.x,z.y,z.r,z.c);
+if(z.hp<z.max&&z.t!='B'){x.fillStyle='#000';x.fillRect(z.x-12,z.y-z.r-7,24,3);x.fillStyle='#e33';x.fillRect(z.x-12,z.y-z.r-7,24*z.hp/z.max,3)}
+}
+for(const pl of g.ps){if(!pl.alive||!pl.tur)continue;const T=pl.tur,tr=TUR[pl.tu-1];x.strokeStyle='rgba(255,255,255,.14)';x.lineWidth=1;x.beginPath();x.arc(T.x,T.y,tr.r,0,7);x.stroke();circ(T.x,T.y,10,'#555');x.strokeStyle='#999';x.lineWidth=5;x.beginPath();x.moveTo(T.x,T.y);x.lineTo(T.x+Math.cos(T.a)*16,T.y+Math.sin(T.a)*16);x.stroke();circ(T.x,T.y,5,pl.col)}
+x.strokeStyle='#f0a030';x.lineWidth=2;
+const beam=(q,x1,y1,x2,y2)=>{const sx=q.own?q.own.x+q.ox0:x1,sy=q.own?q.own.y+q.oy0:y1;x.beginPath();x.moveTo(sx,sy);x.lineTo(sx+x2-x1,sy+y2-y1);x.stroke()};
+for(const b of g.b)beam(b,b.ox,b.oy,b.x,b.y);
+for(const q of g.tr)beam(q,q.x1,q.y1,q.x2,q.y2);
+for(const pl of g.ps){if(!pl.alive||pl===p)continue;x.strokeStyle='#ddd';x.lineWidth=5;x.beginPath();x.moveTo(pl.x,pl.y);x.lineTo(pl.x+Math.cos(pl.a)*20,pl.y+Math.sin(pl.a)*20);x.stroke();circ(pl.x,pl.y,12,pl.hit>0?'#fff':pl.col);x.fillStyle='#fff';x.font='bold 11px system-ui,sans-serif';x.textAlign='center';x.fillText(pl.name,pl.x,pl.y-20)}
+if(p.alive){x.strokeStyle='#ddd';x.lineWidth=5;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x+Math.cos(p.a)*20,p.y+Math.sin(p.a)*20);x.stroke();
+circ(p.x,p.y,12,p.hit>0?'#fff':p.col)}
+x.fillStyle='rgba(30,80,25,.55)';
+for(const t of TR){x.beginPath();x.arc(t.x,t.y,t.r,0,7);x.fill()}
+x.restore();
+// HUD
+const w=p.w,d=WP[w.k],mm=Math.max(0,p.hp);
+x.fillStyle='#ff4d4d';x.font='bold 12px system-ui,sans-serif';x.textAlign='center';
+for(const f of g.fx)x.fillText('-'+f.s,f.x-g.cx,f.y-g.cy);
+x.textAlign='left';x.font='12px system-ui,sans-serif';
+let ly=H-54;
+for(const l of g.log.slice(-4).reverse()){x.fillStyle=l.c||'#ff9b2f';x.globalAlpha=Math.min(1,l.t);x.fillText(l.s,8,ly);x.globalAlpha=1;ly-=15}
+x.fillStyle='rgba(0,0,0,.72)';x.fillRect(0,H-46,W,46);
+x.font='bold 14px system-ui,sans-serif';x.fillStyle='#ffd23f';x.fillText('niv. '+S.lvl,8,H-19);
+const sb=p.shm>0,hy=sb?H-44:H-40,hh=sb?11:14,sy=H-31,xy=sb?H-18:H-22,xh=sb?12:14;
+x.fillStyle='#333';x.fillRect(64,hy,190,hh);x.fillRect(64,xy,190,xh);if(sb)x.fillRect(64,sy,190,11);
+x.fillStyle=mm/p.max>.3?'#3c8a3c':'#d33';x.fillRect(64,hy,190*mm/p.max,hh);
+if(sb){x.fillStyle='#4dd0e1';x.fillRect(64,sy,190*Math.max(0,p.sh)/p.shm,11)}
+x.fillStyle='#3b5bdb';x.fillRect(64,xy,S.lvl>=MAXLV?190:190*S.xp/(xpNeed(S.lvl)),xh);
+x.fillStyle='#fff';x.font=(sb?'10':'11')+'px system-ui,sans-serif';x.textAlign='right';
+x.fillText(Math.ceil(mm)+'/'+p.max,250,hy+hh-2);
+if(sb)x.fillText(Math.ceil(p.sh)+'/'+p.shm,250,sy+9);
+x.fillText(S.lvl>=MAXLV?'MAX':xpd?Math.floor(S.xp)+'/'+Math.ceil(xpNeed(S.lvl))+' XP · reste '+Math.ceil(xpNeed(S.lvl)-S.xp):(100*S.xp/(xpNeed(S.lvl))).toFixed(1)+' %',250,xy+xh-2);
+x.textAlign='left';x.font='bold 14px system-ui,sans-serif';
+x.fillText(p.rl>0?'Recharge…':w.a+'/'+(d.m+p.mg),266,H-19);
+for(let i=0;i<3;i++){const s=p.inv[i],sx=370+i*54;x.fillStyle='#2a2d30';x.fillRect(sx,H-40,50,34);
+if(s){x.fillStyle=WP[s.k].c;x.fillRect(sx+4,H-30,42,6);x.fillStyle='#fff';x.font='9px system-ui,sans-serif';x.textAlign='center';x.fillText(WP[s.k].n,sx+25,H-10,46)}
+x.strokeStyle=i==p.cur?'#fff':'#555';x.lineWidth=2;x.strokeRect(sx,H-40,50,34);x.textAlign='left';x.font='9px system-ui,sans-serif';x.fillStyle='#aaa';x.fillText(i+1,sx+3,H-31)}
+x.font='13px system-ui,sans-serif';x.fillStyle='#fff';
+x.fillText('☠ '+g.kills,545,H-27);x.fillText('Zombies : '+g.z.length,545,H-10);
+const bx=W-128,by=H-150,t=g.time|0;
+x.fillStyle='rgba(0,0,0,.7)';x.fillRect(bx,by,120,98);
+x.fillStyle='#fff';x.font='bold 12px system-ui,sans-serif';x.fillText('Arène',bx+6,by+14);
+x.font='11px system-ui,sans-serif';x.fillText((g.lobby?'Invasion · attente':g.inv?'Invasion · vague '+g.wave:'Vague '+g.wave+'/15')+(g.lobby?'':' – '+String(t/60|0).padStart(2,'0')+':'+String(t%60).padStart(2,'0')),bx+6,by+28);
+x.fillStyle='#3a5a2a';x.fillRect(bx+4,by+32,112,62);
+x.fillStyle='#e33';for(const z of g.z)x.fillRect(bx+4+z.x/WW*112-1,by+32+z.y/WH*62-1,2,2);
+x.fillStyle='#8a8f96';for(const m of g.marks)x.fillRect(bx+4+m.x/WW*112-1.5,by+32+m.y/WH*62-1.5,3,3);
+for(const pl of g.ps){if(!pl.alive)continue;const mx=bx+4+pl.x/WW*112,my=by+32+pl.y/WH*62;x.fillStyle=pl.col;x.fillRect(mx-2,my-2,4,4);if(pl===p&&g.ps.length>1){x.strokeStyle='#fff';x.lineWidth=1;x.strokeRect(mx-3.5,my-3.5,7,7)}}
+if(p.nrg>0){x.fillStyle='rgba(0,0,0,.65)';x.fillRect(W-98,8,90,26);x.fillStyle='#2b6cff';x.fillRect(W-92,11,8,20);x.fillStyle='#ffd23f';x.fillRect(W-92,18,8,6);x.fillStyle='#fff';x.font='bold 13px system-ui,sans-serif';x.textAlign='left';x.fillText('+'+Math.round((p.ne-1)*100)+'% '+p.nrg.toFixed(1)+'s',W-80,26)}
+if(p.tu){x.fillStyle='rgba(0,0,0,.55)';x.fillRect(46,8,160,22);x.fillStyle='#fff';x.font='12px system-ui,sans-serif';x.textAlign='left';x.fillText('Tourelle [T] : '+(p.tcd>0?Math.ceil(p.tcd)+' s':p.tur?'repositionner':'prête'),52,23)}
+if(!p.alive){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(W/2-170,H-92,340,24);x.fillStyle='#fff';x.font='bold 13px system-ui,sans-serif';x.textAlign='center';x.fillText(p.late?'Spectateur — vous jouerez dès la prochaine vague':'Vous êtes mort — spectateur',W/2,H-75)}
+const B=g.z.find(z=>z.t=='B');
+if(B){x.fillStyle='rgba(0,0,0,.6)';x.fillRect(W/2-150,8,300,10);x.fillStyle='#c62828';x.fillRect(W/2-150,8,300*B.hp/B.max,10)}
+if(g.mt>0){x.globalAlpha=Math.min(1,g.mt);x.textAlign='center';x.font='bold 40px system-ui,sans-serif';x.fillStyle='#fff';x.fillText(g.msg,W/2,H/2-60);x.globalAlpha=1}
+}
+const HZ=[],HB=[],HS=[];let HT=0,hlast=0,ha=0;
+function hz(init){const a=Math.random()*6.283,d=init?120+Math.random()*320:430;HZ.push({x:W/2+Math.cos(a)*d*1.6,y:H/2+Math.sin(a)*d,c:['#6b8f47','#b5c24a','#4f6a6a'][Math.random()*3|0],r:10+Math.random()*7,sp:28+Math.random()*28})}
+function drawHome(){
+const t=performance.now()/1000,dt=Math.min(.05,t-hlast);hlast=t;
+const cx=W/2,cy=H/2;
+if(!HZ.length)for(let i=0;i<14;i++)hz(true);
+x.fillStyle='#2f4a20';x.fillRect(0,0,W,H);
+x.fillStyle='#3c3f43';x.fillRect(W/2-70,0,140,H);
+x.fillStyle='#bbb';for(let j=10;j<H;j+=60)x.fillRect(W/2-2,j,4,30);
+x.fillStyle='rgba(150,15,15,.5)';for(const b of HB){x.beginPath();x.arc(b.x,b.y,b.r,0,7);x.fill()}
+for(const z of HZ){const a=Math.atan2(cy-z.y,cx-z.x);z.x+=Math.cos(a)*z.sp*dt;z.y+=Math.sin(a)*z.sp*dt}
+for(let i=HZ.length-1;i>=0;i--)if(Math.hypot(HZ[i].x-cx,HZ[i].y-cy)<24){HZ.splice(i,1);hz(false)}
+HT-=dt;let tg=null,bdist=1e9;
+for(const z of HZ){const d=Math.hypot(z.x-cx,z.y-cy);if(d<bdist){bdist=d;tg=z}}
+if(tg)ha=Math.atan2(tg.y-cy,tg.x-cx);
+if(tg&&HT<=0&&bdist<380){HT=.35+Math.random()*.2;HS.push({x:tg.x,y:tg.y,t:.08});for(let i=0;i<4;i++)HB.push({x:tg.x+Math.random()*16-8,y:tg.y+Math.random()*16-8,r:2+Math.random()*4});if(HB.length>60)HB.splice(0,HB.length-60);HZ.splice(HZ.indexOf(tg),1);hz(false)}
+for(const z of HZ)circ(z.x,z.y,z.r,z.c);
+x.strokeStyle='#f0a030';x.lineWidth=2;
+for(const q of HS){q.t-=dt;x.beginPath();x.moveTo(cx,cy);x.lineTo(q.x,q.y);x.stroke()}
+for(let i=HS.length-1;i>=0;i--)if(HS[i].t<=0)HS.splice(i,1);
+x.strokeStyle='#ddd';x.lineWidth=5;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+Math.cos(ha)*20,cy+Math.sin(ha)*20);x.stroke();
+circ(cx,cy,12,CH[sel].col);
+}
+let last=0;
+function loop(t){
+const dt=Math.min((t-last)/1000,.05);last=t;
+if(G&&G.st=='play')upd(dt);
+pb.style.display=G&&G.st=='play'?'block':'none';
+{const now=Date.now(),rem=nextInv()-now,inInv=G&&G.inv&&(G.st=='play'||G.st=='pause');
+ov.querySelectorAll('.mcd').forEach(q=>q.textContent=fmtT(rem));
+if(rem<=600000&&!inInv){invp.style.display='block';invp.textContent='⚔ Invasion — Route déserte dans '+fmtT(rem)+(ov.style.display!='none'?' · cliquez pour rejoindre':'')}else invp.style.display='none'}{const sh=ov.style.display!='none'&&ov.className=='home'&&scr=='home';pnb.style.display=sh?'block':'none';hwb.style.display=opb.style.display=sh?'block':'none'}draw();requestAnimationFrame(loop);
+}
+addEventListener('keydown',e=>{
+if(e.target&&e.target.tagName=='TEXTAREA')return;
+K[e.code]=true;
+if(e.code=='KeyE')pick();
+if(e.code=='Escape'&&ov.style.display!='none'&&ov.className=='home'&&scr!='home'){menu(backOf(scr));return}
+if((e.code=='Escape'||e.code=='KeyP')&&G){if(G.st=='play')pause();else if(G.st=='pause')resume()}
+if(e.code=='KeyF')fs();
+if(e.code=='KeyT')placeTur();
+if(e.code=='Enter'&&scr=='home'&&(!G||G.st=='end')){const b=document.getElementById('bplay');if(b)b.click()}
+if(G&&G.st=='play'&&/^Digit[1-3]$/.test(e.code)){const i=+e.code[5]-1,p=G.p;if(p.inv[i]){p.cur=i;p.w=p.inv[i];p.rl=0}}
+if(G&&G.st=='play'&&e.code.startsWith('Arrow'))e.preventDefault();
+});
+addEventListener('keyup',e=>{K[e.code]=false});
+cv.addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect();M.x=(e.clientX-r.left)*W/r.width;M.y=(e.clientY-r.top)*H/r.height});
+cv.addEventListener('mousedown',e=>{e.preventDefault();const rc=cv.getBoundingClientRect(),mx=(e.clientX-rc.left)*W/rc.width,my=(e.clientY-rc.top)*H/rc.height;if(G&&G.st=='play'&&mx>=64&&mx<=254&&my>=H-24&&my<=H-4){xpd=!xpd;return}M.down=true});
+addEventListener('mouseup',()=>{M.down=false});
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+const pb=document.getElementById('pb'),bd=document.body;
+pb.onclick=()=>{pb.blur();pause()};
+const invp=document.getElementById('invp');invp.onclick=()=>{if(ov.style.display!='none')menu('maps')};
+const pnb=document.getElementById('pnb'),hwb=document.getElementById('hwb'),opb=document.getElementById('opb');pnb.onclick=()=>{pnb.blur();menu('patch')};hwb.onclick=()=>{hwb.blur();menu('how')};opb.onclick=()=>{opb.blur();menu('opt')};
+function fs(){const d=document;if(d.fullscreenElement){d.exitFullscreen();return}if(d.documentElement.requestFullscreen)d.documentElement.requestFullscreen().catch(()=>bd.classList.add('fit'));else bd.classList.add('fit')}
+document.addEventListener('fullscreenchange',()=>bd.classList.toggle('fs',!!document.fullscreenElement));
+function pause(){if(!G||G.st!='play')return;G.st='pause';for(const k in K)K[k]=false;M.down=false;pmenu(false)}
+function resume(){if(G&&G.st=='pause')G.st='play';ov.style.display='none'}
+function pmenu(o){
+ov.style.display='flex';ov.className='';
+ov.innerHTML=o?`<div class="pn"><h1>Options</h1><button class="b" id="o1">${bd.classList.contains('fit')?'✔ ':''}Afficher sur toute la fenêtre</button><button class="b" id="o2">Plein écran (touche F)</button><button class="b" id="o3">Retour</button></div>`:`<div class="pn"><h1>Pause</h1><button class="b" id="p1">Reprendre</button><button class="b" id="p2">Options</button><button class="b" id="p3">Quitter la partie</button><p class="h">Échap ou P : pause · F : plein écran</p></div>`;
+const q=id=>document.getElementById(id);
+if(o){q('o1').onclick=()=>{bd.classList.toggle('fit');pmenu(true)};q('o2').onclick=()=>fs();q('o3').onclick=()=>pmenu(false)}
+else{q('p1').onclick=resume;q('p2').onclick=()=>pmenu(true);q('p3').onclick=()=>{G.st='end';save();note='';menu()}}
+}
+menu();requestAnimationFrame(loop);
+</script></body></html>
+
+</body></html>
