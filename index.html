@@ -1180,8 +1180,8 @@ const pb=document.getElementById('pb'),bd=document.body,gcb=document.getElementB
 pb.onclick=()=>{pb.blur();pause()};
 const invp=document.getElementById('invp');invp.onclick=()=>{if(ov.style.display!='none'){invOnly=true;menu('maps')}};
 const pnb=document.getElementById('pnb'),hwb=document.getElementById('hwb'),opb=document.getElementById('opb');pnb.onclick=()=>{pnb.blur();menu('patch')};hwb.onclick=()=>{hwb.blur();menu('how')};opb.onclick=()=>{opb.blur();menu('opt')};
-function fs(){const d=document;if(d.fullscreenElement){d.exitFullscreen();return}if(d.documentElement.requestFullscreen)d.documentElement.requestFullscreen().catch(()=>bd.classList.add('fit'));else bd.classList.add('fit')}
-document.addEventListener('fullscreenchange',()=>bd.classList.toggle('fs',!!document.fullscreenElement));
+function fs(){const d=document;if(d.fullscreenElement){d.exitFullscreen();return}if(d.documentElement.requestFullscreen)d.documentElement.requestFullscreen().then(()=>{try{if(navigator.keyboard&&navigator.keyboard.lock)navigator.keyboard.lock(['Escape']).catch(()=>{})}catch(e){}}).catch(()=>bd.classList.add('fit'));else bd.classList.add('fit')}
+document.addEventListener('fullscreenchange',()=>{bd.classList.toggle('fs',!!document.fullscreenElement);if(!document.fullscreenElement){try{if(navigator.keyboard&&navigator.keyboard.unlock)navigator.keyboard.unlock()}catch(e){}}});
 function pause(){if(!G||G.st!='play')return;for(const k in K)K[k]=false;M.down=false;pmenu(false)}
 function resume(){pwk=false;if(G&&G.st=='pause')G.st='play';ov.style.display='none'}
 function pmenu(o){
