@@ -835,11 +835,13 @@ const go=p=>{
 if(NET!==N)return;N.pid=p.id;
 const c=p.connect(N.id,{serialization:'json',reliable:true});let ok=false;
 const to=setTimeout(()=>{if(!ok&&NET===N){try{c.close()}catch(e){}if(mig)return;noHost()}},9000);
-c.on('open',()=>{ok=true;clearTimeout(to);N.c=c;nsend(c,{t:'hi',nm:N.name,ci:sel,lvl:S.lvl,sk:S.sk,re:mig?1:0,kt:S.kills,bm:S.bm.slice(0,16),bs:!!S.boss})});
+c.on('open',()=>{ok=true;clearTimeout(to);N.c=c;nsend(c,{t:'hi',nm:N.name,ci:sel,lvl:S.lvl,sk:S.sk,re:mig?1:0,op:N.opid||null,kt:S.kills,bm:S.bm.slice(0,16),bs:!!S.boss})});
 c.on('data',d=>cdata(c,d));
 c.on('close',()=>{if(NET===N&&N.c===c&&(N.role=='client'||N.role=='conn'))hostLost()});
 };
 if(N.peer&&N.peer.open&&!N.peer.destroyed){go(N.peer);return}
+if(mig&&N.peer&&!N.peer.destroyed&&N.peer.disconnected){try{N.peer.reconnect()}catch(e){}return}
+if(N.pid&&!N.opid)N.opid=N.pid;
 try{N.peer=new Peer()}catch(e){netFail('Impossible de joindre le serveur de connexion.');return}
 keepPeer(N.peer,N);
 N.peer.on('open',()=>go(N.peer));
@@ -897,7 +899,7 @@ const N=NET,g=G;g.net=N;
 const ps=[];
 for(const s of N.roster){
 if(s.pid===N.hostPid&&!N.hand)continue;
-const q=g.ps.find(x=>x.pid===s.pid),pl=mkPlayer(s.ci,s.lvl,s.sk,s.nm,s.pid,s.pid===N.pid);pl.pid=s.pid;pl.base=s.kb||0;pl.bm=cbm(s.bm);pl.bs=!!s.bs;
+const me=s.pid===N.pid||(N.opid&&s.pid===N.opid),q=g.ps.find(x=>x.pid===s.pid),pl=mkPlayer(s.ci,s.lvl,s.sk,s.nm,s.pid,me);pl.pid=me?N.pid:s.pid;pl.base=s.kb||0;pl.bm=cbm(s.bm);pl.bs=!!s.bs;
 if(q){for(const k of ['x','y','hp','sh','alive','late','inv','cur','nrg','tur','tcd','a','kills','dth','caf','imm','spec','lk'])pl[k]=q[k];pl.w=pl.inv[pl.cur]||pl.inv[0]}
 ps.push(pl);
 }
@@ -931,6 +933,7 @@ const N=NET,g=G;if(!N||!g||!d)return;
 if(d.t=='info'){nsend(c,{t:'info',n:g.ps.length,w:g.wave,m:N.map});return}
 if(d.t=='hi'){
 let pl=g.ps.find(q=>q.pid===c.peer);
+if(!pl&&d.op&&d.op!==N.pid){const o=g.ps.find(q=>q.pid===d.op&&!q.local&&!(N.conns[q.pid]&&N.conns[q.pid].c&&N.conns[q.pid].c.open));if(o){delete N.conns[d.op];o.pid=c.peer;pl=o}}
 if(!pl){
 if(g.ps.length>=MAXP){nsend(c,{t:'full'});setTimeout(()=>{try{c.close()}catch(e){}},400);return}
 const ci=CH[d.ci|0]?d.ci|0:0,lvl=cl(d.lvl|0,1,MAXLV),sk=Array.isArray(d.sk)?d.sk.slice(0,60):[];
@@ -1058,6 +1061,7 @@ g.time=d.tm;g.wave=d.w;g.kills=d.k;g.msg=d.msg;g.mt=d.mt;g.lobby=!!d.lb;invT=d.i
 const old=new Map(g.ps.map(q=>[q.pid,q])),ps=[];
 for(const s of d.ps){
 let q=old.get(s.pid);const mine=s.pid===N.pid;
+if(!q&&mine){const lp=g.ps.find(x=>x.local);if(lp){lp.pid=s.pid;q=lp}}
 if(!q){q=mkPlayer(s.ci,1,[],s.name,s.pid,false);q.pid=s.pid;q.x=s.x;q.y=s.y}
 const wa=q.w&&q.w.a,wk=q.w&&q.w.k;
 q.tx=s.x;q.ty=s.y;q.name=s.name;q.ci=s.ci;q.lv=s.lv||q.lv;q.base=s.kb||0;q.bm=cbm(s.bm);q.bs=!!s.bs;q.hp=s.hp;q.max=s.max;q.col=s.col;q.alive=s.alive;q.late=s.late;q.cur=s.cur;q.rl=s.rl;q.nrg=s.nrg;q.ne=s.ne;q.sh=s.sh;q.shm=s.shm;q.tu=s.tu;q.tcd=s.tcd;q.tur=s.tur||null;q.hit=s.hit;q.mg=s.mg;q.kills=s.kills;q.dth=s.d||0;q.caf=s.caf||0;q.imm=s.imm||0;q.spec=!!s.sp;q.lk=!!s.lk;
